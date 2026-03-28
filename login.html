@@ -6,345 +6,120 @@
 <title>NxClose — Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --ink: #0d0e13;
-    --cream: #f7f4ee;
-    --gold: #c9a84c;
-    --gold-light: #e8cc7e;
-    --sage: #3d5c4a;
-    --warm: #fdfbf7;
-    --mid: #6b7280;
-    --border: rgba(201,168,76,0.2);
-    --error: #dc2626;
-    --success: #16a34a;
+    --ink: #0d0e13; --cream: #f7f4ee; --gold: #c9a84c;
+    --gold-light: #e8cc7e; --sage: #3d5c4a; --warm: #fdfbf7;
+    --mid: #6b7280; --border: rgba(201,168,76,0.2);
+    --error: #dc2626; --success: #16a34a;
   }
+  body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--cream); min-height: 100vh; display: flex; overflow: hidden; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--ink);
-    color: var(--cream);
-    min-height: 100vh;
-    display: flex;
-    overflow: hidden;
-  }
-
-  /* ── LEFT PANEL ── */
-  .left-panel {
-    width: 45%;
-    padding: 4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    flex-shrink: 0;
-  }
-
-  .left-bg {
-    position: absolute; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(61,92,74,0.06) 0%, transparent 70%);
-  }
-
-  .grid-lines {
-    position: absolute; inset: 0; z-index: 0;
-    background-image:
-      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
+  /* LEFT PANEL */
+  .left-panel { width: 45%; padding: 4rem; display: flex; flex-direction: column; justify-content: center; position: relative; flex-shrink: 0; }
+  .left-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 70%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(61,92,74,0.06) 0%, transparent 70%); }
+  .grid-lines { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px); background-size: 60px 60px; }
   .left-content { position: relative; z-index: 1; }
-
-  .brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem; font-weight: 900;
-    color: var(--cream); text-decoration: none;
-    letter-spacing: -0.02em;
-    display: block; margin-bottom: 3rem;
-  }
+  .brand { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--cream); text-decoration: none; letter-spacing: -0.02em; display: block; margin-bottom: 3rem; }
   .brand span { color: var(--gold); }
-
-  .left-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 900; line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.25rem;
-  }
+  .left-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
   .left-title em { font-style: normal; color: var(--gold); }
-
-  .left-sub {
-    font-size: 1rem; font-weight: 300;
-    color: rgba(247,244,238,0.6);
-    line-height: 1.75; max-width: 360px;
-    margin-bottom: 3rem;
-  }
-
+  .left-sub { font-size: 1rem; font-weight: 300; color: rgba(247,244,238,0.6); line-height: 1.75; max-width: 360px; margin-bottom: 3rem; }
   .feature-list { display: flex; flex-direction: column; gap: 1rem; }
-  .feature-item {
-    display: flex; align-items: center; gap: 0.75rem;
-    font-size: 0.875rem; color: rgba(247,244,238,0.7);
-  }
-  .feature-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--gold); flex-shrink: 0;
-  }
+  .feature-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: rgba(247,244,238,0.7); }
+  .feature-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
-  /* ── RIGHT PANEL ── */
-  .right-panel {
-    flex: 1;
-    background: var(--warm);
-    display: flex; align-items: center; justify-content: center;
-    padding: 3rem 4rem;
-    position: relative;
-    border-radius: 24px 0 0 24px;
-    overflow-y: auto;
-  }
+  /* RIGHT PANEL */
+  .right-panel { flex: 1; background: var(--warm); display: flex; align-items: center; justify-content: center; padding: 3rem 4rem; position: relative; border-radius: 24px 0 0 24px; overflow-y: auto; }
+  .form-container { width: 100%; max-width: 420px; }
 
-  .form-container {
-    width: 100%; max-width: 420px;
-  }
+  /* TABS */
+  .tabs { display: flex; gap: 0; background: rgba(13,14,19,0.06); border-radius: 10px; padding: 4px; margin-bottom: 2rem; }
+  .tab-btn { flex: 1; padding: 0.6rem; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-size: 0.875rem; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--mid); transition: all 0.2s; }
+  .tab-btn.active { background: var(--ink); color: var(--cream); box-shadow: 0 2px 8px rgba(13,14,19,0.15); }
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex; gap: 0;
-    background: rgba(13,14,19,0.06);
-    border-radius: 10px; padding: 4px;
-    margin-bottom: 2rem;
-  }
-  .tab-btn {
-    flex: 1; padding: 0.6rem;
-    border: none; background: transparent;
-    border-radius: 7px; cursor: pointer;
-    font-size: 0.875rem; font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--mid); transition: all 0.2s;
-  }
-  .tab-btn.active {
-    background: var(--ink); color: var(--cream);
-    box-shadow: 0 2px 8px rgba(13,14,19,0.15);
-  }
-
-  /* ── FORM HEADING ── */
-  .form-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.75rem; font-weight: 700;
-    color: var(--ink); margin-bottom: 0.4rem;
-    letter-spacing: -0.02em;
-  }
-  .form-sub {
-    font-size: 0.875rem; color: var(--mid);
-    margin-bottom: 2rem; line-height: 1.6;
-  }
-
-  /* ── FORM FIELDS ── */
+  .form-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+  .form-sub { font-size: 0.875rem; color: var(--mid); margin-bottom: 1.5rem; line-height: 1.6; }
   .form-panel { display: none; }
   .form-panel.active { display: block; }
 
-  .field-group { margin-bottom: 1.25rem; }
-  .field-label {
-    display: block; font-size: 0.8rem; font-weight: 600;
-    color: var(--ink); margin-bottom: 0.4rem;
-    text-transform: uppercase; letter-spacing: 0.06em;
-  }
-  .field-input {
+  /* OAUTH BUTTONS */
+  .oauth-btn {
     width: 100%; padding: 0.8rem 1rem;
-    border: 1.5px solid rgba(13,14,19,0.12);
-    border-radius: 8px; font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    background: white; color: var(--ink);
-    transition: border-color 0.2s, box-shadow 0.2s;
-    outline: none;
+    border: 1px solid #e2e2e2; border-radius: 10px;
+    background: white; display: flex; align-items: center; gap: 0.85rem;
+    font-size: 0.9rem; font-weight: 500; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all 0.18s; color: #1a1a1a;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 0.65rem;
   }
-  .field-input:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
-  }
-  .field-input.error { border-color: var(--error); }
+  .oauth-btn:hover { border-color: #bbb; box-shadow: 0 3px 10px rgba(0,0,0,0.12); background: #fafafa; }
+  .oauth-btn:active { transform: scale(0.99); }
+  .oauth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .oauth-btn-label { flex: 1; text-align: center; }
 
+  /* DIVIDER */
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.25rem 0; color: var(--mid); font-size: 0.8rem; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(13,14,19,0.1); }
+
+  /* FIELDS */
+  .field-group { margin-bottom: 1.25rem; }
+  .field-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .field-input { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid rgba(13,14,19,0.12); border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; background: white; color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+  .field-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
-  /* Role selector */
-  .role-selector {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;
-    margin-bottom: 1.25rem;
-  }
-  .role-btn {
-    padding: 0.75rem 0.5rem; border-radius: 8px;
-    border: 1.5px solid rgba(13,14,19,0.12);
-    background: white; cursor: pointer;
-    font-size: 0.75rem; font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--mid); text-align: center;
-    transition: all 0.2s;
-  }
+  /* ROLE SELECTOR */
+  .role-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.25rem; }
+  .role-btn { padding: 0.75rem 0.5rem; border-radius: 8px; border: 1.5px solid rgba(13,14,19,0.12); background: white; cursor: pointer; font-size: 0.75rem; font-weight: 600; font-family: 'DM Sans', sans-serif; color: var(--mid); text-align: center; transition: all 0.2s; }
   .role-btn .role-icon { display: block; font-size: 1.2rem; margin-bottom: 0.3rem; }
-  .role-btn.selected {
-    border-color: var(--gold);
-    background: rgba(201,168,76,0.08);
-    color: var(--ink);
-  }
+  .role-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.08); color: var(--ink); }
 
-  /* Submit button */
-  .submit-btn {
-    width: 100%; padding: 0.9rem;
-    background: var(--ink); color: var(--cream);
-    border: none; border-radius: 8px;
-    font-size: 0.9rem; font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer; letter-spacing: 0.04em;
-    text-transform: uppercase;
-    transition: all 0.25s; margin-top: 0.5rem;
-    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
-  }
+  /* SUBMIT */
+  .submit-btn { width: 100%; padding: 0.9rem; background: var(--ink); color: var(--cream); border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: all 0.25s; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
   .submit-btn:hover { background: var(--sage); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,14,19,0.2); }
   .submit-btn:disabled { background: #9ca3af; transform: none; cursor: not-allowed; }
   .submit-btn.loading { pointer-events: none; }
-
-  .spinner {
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid rgba(247,244,238,0.3);
-    border-top-color: var(--cream);
-    animation: spin 0.7s linear infinite;
-    display: none;
-  }
+  .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(247,244,238,0.3); border-top-color: var(--cream); animation: spin 0.7s linear infinite; display: none; }
   .submit-btn.loading .spinner { display: block; }
   .submit-btn.loading .btn-text { opacity: 0.7; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Alert */
-  .alert {
-    padding: 0.75rem 1rem; border-radius: 8px;
-    font-size: 0.85rem; margin-bottom: 1rem;
-    display: none; align-items: center; gap: 0.5rem;
-  }
+  /* ALERT */
+  .alert { padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; display: none; align-items: center; gap: 0.5rem; }
   .alert.show { display: flex; }
   .alert.error { background: rgba(220,38,38,0.08); color: var(--error); border: 1px solid rgba(220,38,38,0.2); }
   .alert.success { background: rgba(22,163,74,0.08); color: var(--success); border: 1px solid rgba(22,163,74,0.2); }
 
-  .divider {
-    display: flex; align-items: center; gap: 1rem;
-    margin: 1.25rem 0; color: var(--mid); font-size: 0.8rem;
-  }
-  .divider::before, .divider::after {
-    content: ''; flex: 1; height: 1px; background: rgba(13,14,19,0.1);
-  }
+  .switch-text { text-align: center; font-size: 0.85rem; color: var(--mid); margin-top: 1.25rem; }
+  .switch-text a { color: var(--ink); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 
-  .switch-text {
-    text-align: center; font-size: 0.85rem;
-    color: var(--mid); margin-top: 1.25rem;
-  }
-  .switch-text a {
-    color: var(--ink); font-weight: 600; cursor: pointer;
-    text-decoration: underline; text-underline-offset: 2px;
-  }
-
-  /* ── DASHBOARD ── */
-  #dashboard-view {
-    display: none;
-    width: 100%; min-height: 100vh;
-    background: var(--cream);
-  }
-
-  .dash-nav {
-    background: var(--ink);
-    padding: 1rem 2rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  .dash-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem; font-weight: 900;
-    color: var(--cream); text-decoration: none;
-  }
+  /* DASHBOARD */
+  #dashboard-view { display: none; width: 100%; min-height: 100vh; background: var(--cream); }
+  .dash-nav { background: var(--ink); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .dash-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; color: var(--cream); text-decoration: none; }
   .dash-logo span { color: var(--gold); }
-  .dash-user {
-    margin-left: auto; display: flex; align-items: center; gap: 0.75rem;
-  }
-  .dash-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--gold), #8a6820);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.8rem; font-weight: 700; color: var(--ink);
-  }
+  .dash-user { margin-left: auto; display: flex; align-items: center; gap: 0.75rem; }
+  .dash-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #8a6820); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: var(--ink); }
   .dash-name { font-size: 0.875rem; color: rgba(247,244,238,0.8); }
-  .dash-role-badge {
-    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; padding: 0.25rem 0.65rem;
-    border-radius: 100px; background: rgba(201,168,76,0.15); color: var(--gold);
-  }
-  .logout-btn {
-    background: none; border: 1px solid rgba(247,244,238,0.15);
-    color: rgba(247,244,238,0.6); padding: 0.4rem 0.9rem;
-    border-radius: 6px; font-size: 0.8rem; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-  }
+  .dash-role-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 100px; background: rgba(201,168,76,0.15); color: var(--gold); }
+  .logout-btn { background: none; border: 1px solid rgba(247,244,238,0.15); color: rgba(247,244,238,0.6); padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
   .logout-btn:hover { background: rgba(255,255,255,0.08); color: var(--cream); }
-
   .dash-body { padding: 2.5rem; }
-
-  .dash-welcome {
-    margin-bottom: 2rem;
-  }
-  .dash-welcome h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem; font-weight: 700;
-    color: var(--ink); margin-bottom: 0.3rem;
-  }
+  .dash-welcome { margin-bottom: 2rem; }
+  .dash-welcome h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--ink); margin-bottom: 0.3rem; }
   .dash-welcome p { font-size: 0.9rem; color: var(--mid); }
-
-  .stats-row {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 1rem; margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: white; border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-    border: 1px solid rgba(201,168,76,0.12);
-  }
-  .stat-card .num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem; font-weight: 900;
-    color: var(--gold); line-height: 1;
-    margin-bottom: 0.25rem;
-  }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: white; border-radius: 12px; padding: 1.25rem 1.5rem; border: 1px solid rgba(201,168,76,0.12); }
+  .stat-card .num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 0.25rem; }
   .stat-card .lbl { font-size: 0.8rem; color: var(--mid); }
-
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-
-  .dash-card {
-    background: white; border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(201,168,76,0.12);
-  }
-  .dash-card h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem; font-weight: 700;
-    color: var(--ink); margin-bottom: 1rem;
-  }
-
-  .empty-state {
-    text-align: center; padding: 2rem;
-    color: var(--mid); font-size: 0.875rem;
-  }
+  .dash-card { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(201,168,76,0.12); }
+  .dash-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
+  .empty-state { text-align: center; padding: 2rem; color: var(--mid); font-size: 0.875rem; }
   .empty-state .icon { font-size: 2rem; margin-bottom: 0.5rem; }
 
-  .action-btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    background: var(--ink); color: var(--cream);
-    padding: 0.7rem 1.4rem; border-radius: 8px;
-    font-size: 0.85rem; font-weight: 600;
-    border: none; cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    transition: all 0.2s; margin-top: 1rem;
-    text-decoration: none;
-  }
-  .action-btn:hover { background: var(--sage); }
-
-  /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     body { flex-direction: column; overflow: auto; }
     .left-panel { display: none; }
@@ -357,10 +132,9 @@
 </head>
 <body>
 
-<!-- ── AUTH VIEW ── -->
+<!-- AUTH VIEW -->
 <div id="auth-view" style="display:flex; width:100%; min-height:100vh;">
 
-  <!-- Left Panel -->
   <div class="left-panel">
     <div class="left-bg"></div>
     <div class="grid-lines"></div>
@@ -377,23 +151,43 @@
     </div>
   </div>
 
-  <!-- Right Panel -->
   <div class="right-panel">
     <div class="form-container">
 
-      <!-- Tabs -->
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
         <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
       </div>
 
-      <!-- Alert -->
       <div class="alert" id="alert"></div>
 
-      <!-- LOGIN FORM -->
+      <!-- LOGIN -->
       <div class="form-panel active" id="login-panel">
         <h2 class="form-title">Welcome back</h2>
         <p class="form-sub">Sign in to your NxClose account</p>
+
+        <!-- OAuth Buttons -->
+        <button class="oauth-btn" onclick="signInWithGoogle()">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span class="oauth-btn-label">Continue with Google</span>
+        </button>
+
+        <button class="oauth-btn" onclick="signInWithMicrosoft()">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.4 24H0V12.6h11.4V24z" fill="#F1511B"/>
+            <path d="M24 24H12.6V12.6H24V24z" fill="#80CC28"/>
+            <path d="M11.4 11.4H0V0h11.4v11.4z" fill="#00ADEF"/>
+            <path d="M24 11.4H12.6V0H24v11.4z" fill="#FBBC09"/>
+          </svg>
+          <span class="oauth-btn-label">Continue with Microsoft</span>
+        </button>
+
+        <div class="divider">or sign in with email</div>
 
         <div class="field-group">
           <label class="field-label">Email Address</label>
@@ -414,12 +208,34 @@
         </div>
       </div>
 
-      <!-- REGISTER FORM -->
+      <!-- REGISTER -->
       <div class="form-panel" id="register-panel">
         <h2 class="form-title">Get started free</h2>
         <p class="form-sub">Create your NxClose account in seconds</p>
 
-        <!-- Role selector -->
+        <!-- OAuth Buttons -->
+        <button class="oauth-btn" onclick="signInWithGoogle()">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          <span class="oauth-btn-label">Sign up with Google</span>
+        </button>
+
+        <button class="oauth-btn" onclick="signInWithMicrosoft()">
+          <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.4 24H0V12.6h11.4V24z" fill="#F1511B"/>
+            <path d="M24 24H12.6V12.6H24V24z" fill="#80CC28"/>
+            <path d="M11.4 11.4H0V0h11.4v11.4z" fill="#00ADEF"/>
+            <path d="M24 11.4H12.6V0H24v11.4z" fill="#FBBC09"/>
+          </svg>
+          <span class="oauth-btn-label">Sign up with Microsoft</span>
+        </button>
+
+        <div class="divider">or create with email</div>
+
         <div style="margin-bottom:0.5rem;">
           <label class="field-label">I am a</label>
         </div>
@@ -475,7 +291,7 @@
   </div>
 </div>
 
-<!-- ── DASHBOARD VIEW ── -->
+<!-- DASHBOARD VIEW -->
 <div id="dashboard-view">
   <nav class="dash-nav">
     <a href="index.html" class="dash-logo">Nx<span>Close</span></a>
@@ -486,63 +302,33 @@
       <button class="logout-btn" onclick="handleLogout()">Log Out</button>
     </div>
   </nav>
-
   <div class="dash-body">
     <div class="dash-welcome">
       <h1 id="dash-greeting">Welcome back!</h1>
       <p>Here's your NxClose pipeline overview</p>
     </div>
-
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="num">0</div>
-        <div class="lbl">Active Deals</div>
-      </div>
-      <div class="stat-card">
-        <div class="num">0</div>
-        <div class="lbl">Leads</div>
-      </div>
-      <div class="stat-card">
-        <div class="num">0</div>
-        <div class="lbl">Documents</div>
-      </div>
-      <div class="stat-card">
-        <div class="num">0</div>
-        <div class="lbl">Unread Messages</div>
-      </div>
+      <div class="stat-card"><div class="num">0</div><div class="lbl">Active Deals</div></div>
+      <div class="stat-card"><div class="num">0</div><div class="lbl">Leads</div></div>
+      <div class="stat-card"><div class="num">0</div><div class="lbl">Documents</div></div>
+      <div class="stat-card"><div class="num">0</div><div class="lbl">Unread Messages</div></div>
     </div>
-
     <div class="dash-grid">
       <div class="dash-card">
         <h3>Recent Deals</h3>
-        <div class="empty-state">
-          <div class="icon">🏠</div>
-          <div>No deals yet</div>
-          <div style="font-size:0.8rem;margin-top:0.3rem;color:#9ca3af">Create your first deal to get started</div>
-        </div>
-        <button class="action-btn">+ New Deal</button>
+        <div class="empty-state"><div class="icon">🏠</div><div>No deals yet</div></div>
       </div>
       <div class="dash-card">
         <h3>Recent Messages</h3>
-        <div class="empty-state">
-          <div class="icon">💬</div>
-          <div>No messages yet</div>
-          <div style="font-size:0.8rem;margin-top:0.3rem;color:#9ca3af">Messages will appear here when deals are active</div>
-        </div>
+        <div class="empty-state"><div class="icon">💬</div><div>No messages yet</div></div>
       </div>
       <div class="dash-card">
         <h3>Pending Documents</h3>
-        <div class="empty-state">
-          <div class="icon">📁</div>
-          <div>No pending documents</div>
-        </div>
+        <div class="empty-state"><div class="icon">📁</div><div>No pending documents</div></div>
       </div>
       <div class="dash-card">
         <h3>Notifications</h3>
-        <div class="empty-state">
-          <div class="icon">🔔</div>
-          <div>You're all caught up</div>
-        </div>
+        <div class="empty-state"><div class="icon">🔔</div><div>You're all caught up</div></div>
       </div>
     </div>
   </div>
@@ -550,7 +336,13 @@
 
 <script>
   // ── CONFIG ────────────────────────────────────────────────────────
-  const API = window.NEXCLOSE_API_URL || 'https://nexclose-backend-production.up.railway.app';
+  const API          = 'https://nexclose-backend-production.up.railway.app';
+  const SUPABASE_URL = 'https://dnqymhwlejfvcrtywhpw.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucXltaHdsZWpmdmNydHl3aHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1Nzk4NTAsImV4cCI6MjA5MDE1NTg1MH0.RlLWBgTiPUFVmPLo8K8lIpJI6YQSeJXpBjWH_Es2z6k';
+
+  // Init Supabase client
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   // ── STATE ─────────────────────────────────────────────────────────
   let selectedRole = 'loan_officer';
@@ -558,8 +350,76 @@
   let currentUser  = JSON.parse(localStorage.getItem('nc_user') || 'null');
 
   // ── INIT ──────────────────────────────────────────────────────────
-  if (authToken && currentUser) {
-    showDashboard(currentUser);
+  if (authToken && currentUser) showDashboard(currentUser);
+
+  // Handle OAuth callback (when user returns from Google/Microsoft)
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      const user = session.user;
+      const displayName = user.user_metadata?.full_name || user.email;
+      const firstName = displayName.split(' ')[0] || 'User';
+      const lastName  = displayName.split(' ').slice(1).join(' ') || '';
+
+      // Register in our backend if new user
+      try {
+        const res = await fetch(`${API}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            password: session.access_token.slice(0, 20) + 'Oauth!',
+            first_name: firstName,
+            last_name: lastName || 'User',
+            role: 'buyer',
+          }),
+        });
+        const data = await res.json();
+        if (data.accessToken) {
+          localStorage.setItem('nc_token', data.accessToken);
+          localStorage.setItem('nc_user', JSON.stringify(data.user));
+          authToken   = data.accessToken;
+          currentUser = data.user;
+          showDashboard(data.user);
+          return;
+        }
+      } catch {}
+
+      // If already registered, try login
+      try {
+        const res = await fetch(`${API}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            password: session.access_token.slice(0, 20) + 'Oauth!',
+          }),
+        });
+        const data = await res.json();
+        if (data.accessToken) {
+          localStorage.setItem('nc_token', data.accessToken);
+          localStorage.setItem('nc_user', JSON.stringify(data.user));
+          showDashboard(data.user);
+        }
+      } catch {}
+    }
+  });
+
+  // ── OAUTH ─────────────────────────────────────────────────────────
+  async function signInWithGoogle() {
+    await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href }
+    });
+  }
+
+  async function signInWithMicrosoft() {
+    await sb.auth.signInWithOAuth({
+      provider: 'azure',
+      options: {
+        scopes: 'email',
+        redirectTo: window.location.href
+      }
+    });
   }
 
   // ── TAB SWITCHING ─────────────────────────────────────────────────
@@ -572,64 +432,45 @@
     clearAlert();
   }
 
-  // ── ROLE SELECTION ────────────────────────────────────────────────
   function selectRole(btn) {
     document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedRole = btn.dataset.role;
   }
 
-  // ── ALERT ─────────────────────────────────────────────────────────
   function showAlert(msg, type = 'error') {
     const el = document.getElementById('alert');
     el.textContent = msg;
     el.className = `alert ${type} show`;
   }
-  function clearAlert() {
-    document.getElementById('alert').className = 'alert';
-  }
+  function clearAlert() { document.getElementById('alert').className = 'alert'; }
 
-  // ── LOGIN ─────────────────────────────────────────────────────────
+  // ── EMAIL LOGIN ───────────────────────────────────────────────────
   async function handleLogin() {
     const email    = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     clearAlert();
-
     if (!email || !password) return showAlert('Please enter your email and password.');
 
     const btn = document.getElementById('login-btn');
-    btn.classList.add('loading');
-    btn.disabled = true;
+    btn.classList.add('loading'); btn.disabled = true;
 
     try {
       const res  = await fetch(`${API}/api/auth/login`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-
-      if (!res.ok) {
-        showAlert(data.error || 'Invalid email or password.');
-        return;
-      }
-
+      if (!res.ok) { showAlert(data.error || 'Invalid email or password.'); return; }
       localStorage.setItem('nc_token', data.accessToken);
       localStorage.setItem('nc_refresh', data.refreshToken);
       localStorage.setItem('nc_user', JSON.stringify(data.user));
-      authToken   = data.accessToken;
-      currentUser = data.user;
-
       showDashboard(data.user);
-    } catch {
-      showAlert('Connection error. Please check your internet and try again.');
-    } finally {
-      btn.classList.remove('loading');
-      btn.disabled = false;
-    }
+    } catch { showAlert('Connection error. Please try again.'); }
+    finally { btn.classList.remove('loading'); btn.disabled = false; }
   }
 
-  // ── REGISTER ──────────────────────────────────────────────────────
+  // ── EMAIL REGISTER ────────────────────────────────────────────────
   async function handleRegister() {
     const first_name = document.getElementById('reg-first').value.trim();
     const last_name  = document.getElementById('reg-last').value.trim();
@@ -639,49 +480,35 @@
     clearAlert();
 
     if (!first_name || !last_name) return showAlert('Please enter your full name.');
-    if (!email)    return showAlert('Please enter your email address.');
+    if (!email) return showAlert('Please enter your email address.');
     if (password.length < 8) return showAlert('Password must be at least 8 characters.');
 
     const btn = document.getElementById('register-btn');
-    btn.classList.add('loading');
-    btn.disabled = true;
+    btn.classList.add('loading'); btn.disabled = true;
 
     try {
       const res  = await fetch(`${API}/api/auth/register`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ first_name, last_name, email, password, role: selectedRole, company }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ first_name, last_name, email, password, role: selectedRole, company }),
       });
       const data = await res.json();
-
-      if (!res.ok) {
-        showAlert(data.errors?.[0]?.msg || data.error || 'Registration failed. Please try again.');
-        return;
-      }
-
+      if (!res.ok) { showAlert(data.errors?.[0]?.msg || data.error || 'Registration failed.'); return; }
       localStorage.setItem('nc_token', data.accessToken);
       localStorage.setItem('nc_refresh', data.refreshToken);
       localStorage.setItem('nc_user', JSON.stringify(data.user));
-      authToken   = data.accessToken;
-      currentUser = data.user;
-
       showAlert(`Welcome to NxClose, ${first_name}! 🎉`, 'success');
       setTimeout(() => showDashboard(data.user), 800);
-    } catch {
-      showAlert('Connection error. Please check your internet and try again.');
-    } finally {
-      btn.classList.remove('loading');
-      btn.disabled = false;
-    }
+    } catch { showAlert('Connection error. Please try again.'); }
+    finally { btn.classList.remove('loading'); btn.disabled = false; }
   }
 
-  // ── SHOW DASHBOARD ────────────────────────────────────────────────
+  // ── DASHBOARD ─────────────────────────────────────────────────────
   function showDashboard(user) {
     document.getElementById('auth-view').style.display    = 'none';
     document.getElementById('dashboard-view').style.display = 'block';
     document.body.style.background = 'var(--cream)';
 
-    const name    = `${user.first_name} ${user.last_name}`;
+    const name     = `${user.first_name} ${user.last_name}`;
     const initials = `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
     const roleLabel = { loan_officer: 'Loan Officer', agent: 'RE Agent', buyer: 'Buyer', admin: 'Admin' }[user.role] || user.role;
 
@@ -693,27 +520,14 @@
 
   // ── LOGOUT ────────────────────────────────────────────────────────
   async function handleLogout() {
-    try {
-      await fetch(`${API}/api/auth/logout`, {
-        method:  'POST',
-        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ refreshToken: localStorage.getItem('nc_refresh') }),
-      });
-    } catch { /* ignore */ }
-
-    localStorage.removeItem('nc_token');
-    localStorage.removeItem('nc_refresh');
-    localStorage.removeItem('nc_user');
-    authToken   = null;
-    currentUser = null;
-
+    await sb.auth.signOut();
+    localStorage.clear();
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('auth-view').style.display      = 'flex';
     document.body.style.background = 'var(--ink)';
-    clearAlert();
   }
 
-  // ── ENTER KEY SUPPORT ─────────────────────────────────────────────
+  // Enter key support
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Enter') return;
     if (document.getElementById('login-panel').classList.contains('active')) handleLogin();
