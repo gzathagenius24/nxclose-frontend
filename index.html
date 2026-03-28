@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexClose — Where Deals Come Together</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0e13;
+    --cream: #f7f4ee;
+    --gold: #c9a84c;
+    --gold-light: #e8cc7e;
+    --sage: #3d5c4a;
+    --sage-light: #5a8a6a;
+    --warm-white: #fdfbf7;
+    --mid: #6b7280;
+    --border: rgba(201,168,76,0.2);
+    --card-bg: rgba(255,255,255,0.6);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(247,244,238,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--ink); text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--gold); }
+
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em;
+    color: var(--mid); text-decoration: none; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    background: var(--ink); color: var(--cream);
+    padding: 0.6rem 1.5rem; border-radius: 2px;
+    font-size: 0.875rem; font-weight: 600;
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--sage); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(201,168,76,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(61,92,74,0.1) 0%, transparent 70%);
+  }
+
+  .hero-grid-lines {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.06) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(201,168,76,0.12); border: 1px solid var(--border);
+    padding: 0.4rem 1rem; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #a07830;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); display: block;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 900; line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.35s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal; color: var(--gold);
+    position: relative; display: inline-block;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute; left: 0; bottom: 4px; right: 0; height: 3px;
+    background: var(--gold); opacity: 0.4;
+  }
+
+  .hero p {
+    font-size: 1.15rem; font-weight: 300; line-height: 1.75;
+    color: #4a5060; max-width: 520px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.65s ease both;
+  }
+
+  .btn-primary {
+    background: var(--ink); color: var(--cream);
+    padding: 0.9rem 2.2rem; border-radius: 2px;
+    font-weight: 600; font-size: 0.9rem;
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: all 0.25s; border: 2px solid var(--ink);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--sage); border-color: var(--sage); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,14,19,0.2); }
+
+  .btn-secondary {
+    background: transparent; color: var(--ink);
+    padding: 0.9rem 2.2rem; border-radius: 2px;
+    font-weight: 600; font-size: 0.9rem;
+    text-decoration: none; letter-spacing: 0.04em; text-transform: uppercase;
+    border: 2px solid var(--ink);
+    transition: all 0.25s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-secondary:hover { background: var(--ink); color: var(--cream); }
+
+  .hero-visual {
+    position: absolute; right: 4rem; top: 50%; transform: translateY(-50%);
+    width: 420px; z-index: 1;
+    animation: fadeLeft 0.8s 0.4s ease both;
+  }
+
+  /* DASHBOARD MOCKUP */
+  .dash-card {
+    background: var(--warm-white);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 12px;
+    box-shadow: 0 32px 80px rgba(13,14,19,0.18), 0 8px 24px rgba(13,14,19,0.08);
+    overflow: hidden;
+  }
+
+  .dash-header {
+    background: var(--ink);
+    padding: 0.8rem 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dash-title { color: rgba(247,244,238,0.5); font-size: 0.75rem; font-weight: 500; margin-left: auto; }
+
+  .dash-body { padding: 1.2rem; }
+
+  .dash-pipeline {
+    display: flex; gap: 0.5rem; margin-bottom: 1rem;
+  }
+  .pipe-col {
+    flex: 1; background: rgba(201,168,76,0.06);
+    border-radius: 8px; padding: 0.7rem 0.5rem;
+    border: 1px solid var(--border);
+  }
+  .pipe-col-title {
+    font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.5rem;
+  }
+  .pipe-item {
+    background: white; border-radius: 6px; padding: 0.5rem;
+    margin-bottom: 0.4rem; border: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.6rem; color: var(--ink);
+  }
+  .pipe-item strong { display: block; font-weight: 600; color: var(--ink); }
+  .pipe-item span { color: var(--mid); font-size: 0.55rem; }
+  .pipe-tag {
+    display: inline-block; padding: 0.1rem 0.35rem; border-radius: 100px;
+    font-size: 0.5rem; font-weight: 700; margin-top: 0.25rem; text-transform: uppercase;
+  }
+  .tag-loan { background: rgba(201,168,76,0.15); color: #a07830; }
+  .tag-re { background: rgba(61,92,74,0.15); color: var(--sage); }
+  .tag-lead { background: rgba(99,102,241,0.1); color: #6366f1; }
+
+  .dash-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;
+  }
+  .stat-box {
+    background: var(--ink); border-radius: 8px; padding: 0.7rem;
+    text-align: center;
+  }
+  .stat-box .num { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 900; color: var(--gold); }
+  .stat-box .lbl { font-size: 0.5rem; color: rgba(247,244,238,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.1rem; }
+
+  /* STATS STRIP */
+  .stats-strip {
+    background: var(--ink);
+    padding: 3rem 4rem;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  .stat-item { text-align: center; }
+  .stat-item .big {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem; font-weight: 900; color: var(--gold);
+    line-height: 1; margin-bottom: 0.4rem;
+  }
+  .stat-item .desc { font-size: 0.85rem; color: rgba(247,244,238,0.6); letter-spacing: 0.02em; }
+
+  /* SECTION COMMON */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 900; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 1.25rem;
+  }
+  .section-sub {
+    font-size: 1rem; color: #5a6070; line-height: 1.75;
+    max-width: 500px;
+  }
+
+  /* HOW IT WORKS */
+  .how-it-works { background: var(--warm-white); }
+  .flow-container {
+    margin-top: 4rem;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0; position: relative;
+  }
+  .flow-container::before {
+    content: '';
+    position: absolute; top: 52px; left: 16.66%; right: 16.66%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--sage) 50%, var(--gold) 100%);
+    z-index: 0;
+  }
+
+  .flow-step { padding: 2rem; text-align: center; position: relative; z-index: 1; }
+  .flow-num {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem; font-weight: 900;
+    border: 2px solid var(--gold);
+    background: var(--cream);
+    position: relative; z-index: 2;
+  }
+  .flow-step:nth-child(1) .flow-num { background: var(--ink); color: var(--gold); border-color: var(--ink); }
+  .flow-step:nth-child(2) .flow-num { background: var(--sage); color: white; border-color: var(--sage); }
+  .flow-step:nth-child(3) .flow-num { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+
+  .flow-step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem;
+  }
+  .flow-step p { font-size: 0.9rem; color: #5a6070; line-height: 1.7; }
+
+  /* ROLES */
+  .roles { background: var(--cream); }
+  .roles-header { max-width: 600px; margin-bottom: 4rem; }
+  .roles-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  .role-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 2.5rem;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    cursor: default;
+    position: relative; overflow: hidden;
+  }
+  .role-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  .role-card:nth-child(1)::before { background: var(--gold); }
+  .role-card:nth-child(2)::before { background: var(--sage); }
+  .role-card:nth-child(3)::before { background: #6366f1; }
+  .role-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(13,14,19,0.12); border-color: transparent; }
+  .role-card:hover::before { opacity: 1; }
+
+  .role-icon {
+    width: 52px; height: 52px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; margin-bottom: 1.5rem;
+  }
+  .role-card:nth-child(1) .role-icon { background: rgba(201,168,76,0.12); }
+  .role-card:nth-child(2) .role-icon { background: rgba(61,92,74,0.12); }
+  .role-card:nth-child(3) .role-icon { background: rgba(99,102,241,0.1); }
+
+  .role-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .role-card p { font-size: 0.9rem; color: #5a6070; line-height: 1.7; margin-bottom: 1.5rem; }
+
+  .role-features { list-style: none; }
+  .role-features li {
+    font-size: 0.85rem; color: #4a5060;
+    padding: 0.4rem 0;
+    display: flex; align-items: center; gap: 0.6rem;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .role-features li::before {
+    content: '✓'; font-weight: 700; font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .role-card:nth-child(1) .role-features li::before { color: var(--gold); }
+  .role-card:nth-child(2) .role-features li::before { color: var(--sage); }
+  .role-card:nth-child(3) .role-features li::before { color: #6366f1; }
+
+  /* FEATURES */
+  .features { background: var(--ink); color: var(--cream); }
+  .features .section-title { color: var(--cream); }
+  .features .section-sub { color: rgba(247,244,238,0.6); }
+  .features-grid {
+    margin-top: 4rem;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
+    overflow: hidden;
+  }
+  .feat-item {
+    padding: 2.5rem; background: var(--ink);
+    transition: background 0.3s;
+  }
+  .feat-item:hover { background: rgba(201,168,76,0.08); }
+  .feat-ico { font-size: 2rem; margin-bottom: 1rem; }
+  .feat-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem;
+    color: var(--cream);
+  }
+  .feat-item p { font-size: 0.875rem; color: rgba(247,244,238,0.5); line-height: 1.65; }
+
+  /* PIPELINE VISUAL */
+  .pipeline-section { background: var(--warm-white); }
+  .pipeline-section .inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+  .pipeline-demo {
+    background: var(--ink); border-radius: 16px;
+    padding: 2rem; box-shadow: 0 32px 80px rgba(13,14,19,0.2);
+    border: 1px solid rgba(201,168,76,0.15);
+  }
+  .pd-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .pd-header h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream); font-size: 1.1rem;
+  }
+  .pd-badge {
+    background: rgba(201,168,76,0.15); color: var(--gold);
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 0.3rem 0.75rem; border-radius: 100px;
+  }
+  .pd-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .pd-row {
+    display: flex; align-items: center; gap: 1rem;
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 0.9rem 1rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .pd-row:hover { background: rgba(201,168,76,0.1); }
+  .pd-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+  .av1 { background: rgba(201,168,76,0.2); color: var(--gold); }
+  .av2 { background: rgba(61,92,74,0.3); color: #8ab89a; }
+  .av3 { background: rgba(99,102,241,0.2); color: #a5b4fc; }
+  .av4 { background: rgba(201,168,76,0.2); color: var(--gold); }
+
+  .pd-info { flex: 1; }
+  .pd-name { font-size: 0.8rem; font-weight: 600; color: var(--cream); }
+  .pd-detail { font-size: 0.7rem; color: rgba(247,244,238,0.4); margin-top: 0.15rem; }
+  .pd-status {
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 100px;
+  }
+  .s-pending { background: rgba(234,179,8,0.15); color: #ca8a04; }
+  .s-active { background: rgba(34,197,94,0.15); color: #16a34a; }
+  .s-review { background: rgba(99,102,241,0.15); color: #6366f1; }
+  .s-closed { background: rgba(201,168,76,0.15); color: var(--gold); }
+
+  .progress-bar {
+    margin-top: 1.5rem; padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .pb-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .pb-label span { font-size: 0.7rem; color: rgba(247,244,238,0.4); }
+  .pb-label strong { font-size: 0.7rem; color: var(--gold); }
+  .pb-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 100px; }
+  .pb-fill { height: 100%; background: linear-gradient(90deg, var(--sage-light), var(--gold)); border-radius: 100px; transition: width 1s ease; }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--cream); }
+  .testi-grid { margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .testi-card {
+    background: var(--warm-white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem;
+    position: relative;
+  }
+  .testi-card::before {
+    content: '"'; font-family: 'Playfair Display', serif;
+    font-size: 5rem; color: var(--gold); opacity: 0.15;
+    position: absolute; top: -1rem; left: 1.5rem;
+    line-height: 1;
+  }
+  .testi-text {
+    font-size: 0.9rem; line-height: 1.75; color: #4a5060;
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 1;
+  }
+  .testi-author { display: flex; align-items: center; gap: 0.75rem; }
+  .testi-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+  }
+  .ta1 { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .ta2 { background: rgba(61,92,74,0.15); color: var(--sage); }
+  .ta3 { background: rgba(99,102,241,0.1); color: #6366f1; }
+  .testi-name { font-weight: 600; font-size: 0.875rem; }
+  .testi-role { font-size: 0.75rem; color: var(--mid); }
+  .stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 1rem; }
+
+  /* PRICING */
+  .pricing { background: var(--warm-white); }
+  .pricing-grid { margin-top: 4rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .price-card {
+    background: var(--cream); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .price-card.featured {
+    background: var(--ink); color: var(--cream);
+    border-color: var(--gold);
+    transform: scale(1.03);
+  }
+  .price-card.featured .feat-badge {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: var(--gold); color: var(--ink);
+    font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 0.25rem 0.65rem; border-radius: 100px;
+  }
+  .price-card:not(.featured):hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(13,14,19,0.1); }
+
+  .price-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold); margin-bottom: 0.5rem; }
+  .price-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; }
+  .price-card.featured .price-name { color: var(--cream); }
+  .price-amount {
+    display: flex; align-items: baseline; gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .price-currency { font-size: 1.2rem; font-weight: 600; }
+  .price-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; line-height: 1; }
+  .price-card.featured .price-num { color: var(--gold); }
+  .price-per { font-size: 0.8rem; color: var(--mid); }
+  .price-card.featured .price-per { color: rgba(247,244,238,0.4); }
+  .price-desc { font-size: 0.85rem; color: var(--mid); margin-bottom: 2rem; }
+  .price-card.featured .price-desc { color: rgba(247,244,238,0.5); }
+
+  .price-features { list-style: none; margin-bottom: 2rem; }
+  .price-features li {
+    padding: 0.5rem 0; font-size: 0.875rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; align-items: center; gap: 0.6rem;
+    color: #4a5060;
+  }
+  .price-card.featured .price-features li {
+    color: rgba(247,244,238,0.7);
+    border-color: rgba(255,255,255,0.06);
+  }
+  .price-features li::before { content: '→'; color: var(--gold); font-weight: 700; }
+
+  .price-btn {
+    display: block; text-align: center; width: 100%;
+    padding: 0.875rem; border-radius: 4px; font-weight: 600;
+    font-size: 0.875rem; text-decoration: none; letter-spacing: 0.04em;
+    text-transform: uppercase; transition: all 0.25s;
+  }
+  .price-btn-outline {
+    border: 2px solid var(--ink); color: var(--ink);
+    background: transparent;
+  }
+  .price-btn-outline:hover { background: var(--ink); color: var(--cream); }
+  .price-btn-solid {
+    background: var(--gold); color: var(--ink); border: 2px solid var(--gold);
+  }
+  .price-btn-solid:hover { background: var(--gold-light); box-shadow: 0 8px 24px rgba(201,168,76,0.4); }
+
+  /* CTA */
+  .cta-section {
+    background: var(--ink);
+    padding: 7rem 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,168,76,0.1) 0%, transparent 70%);
+  }
+  .cta-section .section-title { color: var(--cream); max-width: 600px; margin: 0 auto 1.5rem; }
+  .cta-section p { color: rgba(247,244,238,0.6); font-size: 1rem; max-width: 480px; margin: 0 auto 3rem; line-height: 1.75; }
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+
+  /* FOOTER */
+  footer {
+    background: #080810; color: rgba(247,244,238,0.5);
+    padding: 4rem; 
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-brand .logo { display: block; margin-bottom: 1rem; color: var(--cream); }
+  .footer-brand p { font-size: 0.85rem; line-height: 1.7; max-width: 260px; }
+  .footer-col h5 {
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--gold);
+    margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 0.6rem; }
+  .footer-col a { color: rgba(247,244,238,0.5); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--cream); }
+  .footer-bottom {
+    background: #080810; padding: 1.5rem 4rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem; color: rgba(247,244,238,0.3);
+  }
+  .footer-bottom a { color: var(--gold); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeLeft {
+    from { opacity: 0; transform: translate(32px, -50%); }
+    to { opacity: 1; transform: translate(0, -50%); }
+  }
+
+  /* Intersection Observer Animations */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  @media (max-width: 1100px) {
+    .hero-visual { display: none; }
+    .roles-grid, .features-grid, .testi-grid, .pricing-grid { grid-template-columns: 1fr 1fr; }
+    .flow-container { grid-template-columns: 1fr; }
+    .flow-container::before { display: none; }
+    footer { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section, .hero { padding: 5rem 1.5rem; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); padding: 3rem 1.5rem; }
+    .roles-grid, .features-grid, .testi-grid, .pricing-grid { grid-template-columns: 1fr; }
+    .pipeline-section .inner { grid-template-columns: 1fr; }
+    .price-card.featured { transform: none; }
+    footer { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+    .footer-bottom { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Nex<span>Close</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#roles">Who It's For</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Get Started</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">One Platform. Every Deal.</div>
+    <h1>Where Loans &amp;<br><em>Real Estate</em><br>Finally Meet.</h1>
+    <p>NexClose brings loan officers, real estate agents, and buyers into one seamless workflow — from first contact to closed deal. No more scattered emails, lost files, or missed updates.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Start Free Trial →</a>
+      <a href="#how" class="btn-secondary">See How It Works</a>
+    </div>
+  </div>
+
+  <!-- Dashboard Mockup -->
+  <div class="hero-visual">
+    <div class="dash-card">
+      <div class="dash-header">
+        <div class="dash-dot" style="background:#ff5f57"></div>
+        <div class="dash-dot" style="background:#febc2e"></div>
+        <div class="dash-dot" style="background:#28c840"></div>
+        <span class="dash-title">NexClose Pipeline</span>
+      </div>
+      <div class="dash-body">
+        <div class="dash-pipeline">
+          <div class="pipe-col">
+            <div class="pipe-col-title">Leads</div>
+            <div class="pipe-item">
+              <strong>Sarah M.</strong>
+              <span>$485,000 Pre-qual</span>
+              <div><span class="pipe-tag tag-lead">Lead</span></div>
+            </div>
+            <div class="pipe-item">
+              <strong>James T.</strong>
+              <span>$320,000 FHA</span>
+              <div><span class="pipe-tag tag-lead">Lead</span></div>
+            </div>
+          </div>
+          <div class="pipe-col">
+            <div class="pipe-col-title">In Process</div>
+            <div class="pipe-item">
+              <strong>Chen Fam.</strong>
+              <span>Docs Submitted</span>
+              <div><span class="pipe-tag tag-loan">Loan</span></div>
+            </div>
+            <div class="pipe-item">
+              <strong>Rivera, L.</strong>
+              <span>Listing Active</span>
+              <div><span class="pipe-tag tag-re">RE Agent</span></div>
+            </div>
+          </div>
+          <div class="pipe-col">
+            <div class="pipe-col-title">Closing</div>
+            <div class="pipe-item">
+              <strong>Park &amp; Kim</strong>
+              <span>Title Clear ✓</span>
+              <div><span class="pipe-tag tag-loan">Loan</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-stats">
+          <div class="stat-box"><div class="num">$2.4M</div><div class="lbl">Pipeline</div></div>
+          <div class="stat-box"><div class="num">8</div><div class="lbl">Active Deals</div></div>
+          <div class="stat-box"><div class="num">94%</div><div class="lbl">Close Rate</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip">
+  <div class="stat-item reveal">
+    <div class="big">$4.2B+</div>
+    <div class="desc">In Loans Processed</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-1">
+    <div class="big">18,000+</div>
+    <div class="desc">Professionals Onboard</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-2">
+    <div class="big">96%</div>
+    <div class="desc">Customer Satisfaction</div>
+  </div>
+  <div class="stat-item reveal reveal-delay-3">
+    <div class="big">14 Days</div>
+    <div class="desc">Avg. Faster Close Time</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works" id="how">
+  <div class="section-label">Process</div>
+  <h2 class="section-title reveal">One Pipeline,<br>Zero Confusion</h2>
+  <p class="section-sub reveal reveal-delay-1">From lead capture to closing day, every stakeholder stays aligned inside a single platform.</p>
+
+  <div class="flow-container">
+    <div class="flow-step reveal">
+      <div class="flow-num">1</div>
+      <h3>Capture &amp; Connect</h3>
+      <p>Leads enter through your branded portal, get matched with the right loan officer and real estate agent instantly, and receive a personalized onboarding link.</p>
+    </div>
+    <div class="flow-step reveal reveal-delay-1">
+      <div class="flow-num">2</div>
+      <h3>Collaborate in Real Time</h3>
+      <p>Loan officers, agents, and buyers share documents, milestones, and messages in one unified workspace. No more email chains or app-switching.</p>
+    </div>
+    <div class="flow-step reveal reveal-delay-2">
+      <div class="flow-num">3</div>
+      <h3>Close With Confidence</h3>
+      <p>Automated status updates, e-sign, and compliance checklists ensure every deal crosses the finish line on time — with a complete audit trail.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROLES SECTION -->
+<section class="roles" id="roles">
+  <div class="roles-header">
+    <div class="section-label">Built For Everyone</div>
+    <h2 class="section-title reveal">Every Role.<br>One Roof.</h2>
+    <p class="section-sub reveal reveal-delay-1">NexClose is purpose-built for every participant in a real estate transaction.</p>
+  </div>
+
+  <div class="roles-grid">
+    <div class="role-card reveal">
+      <div class="role-icon">🏦</div>
+      <h3>Loan Officers</h3>
+      <p>Manage your entire pipeline, automate document collection, and stay connected to every agent and borrower in one command center.</p>
+      <ul class="role-features">
+        <li>Automated borrower document requests</li>
+        <li>Real-time pipeline visibility</li>
+        <li>Integrated rate &amp; pre-qual tools</li>
+        <li>Agent co-branding &amp; referral tracking</li>
+        <li>RESPA-compliant communication logs</li>
+      </ul>
+    </div>
+    <div class="role-card reveal reveal-delay-1">
+      <div class="role-icon">🏡</div>
+      <h3>Real Estate Agents</h3>
+      <p>Share listings, coordinate showings, and track your client's loan progress — all without a single phone tag with the lender.</p>
+      <ul class="role-features">
+        <li>Live loan status updates</li>
+        <li>Client milestone notifications</li>
+        <li>Offer &amp; contract management</li>
+        <li>Co-branded buyer portal</li>
+        <li>Referral network &amp; lead routing</li>
+      </ul>
+    </div>
+    <div class="role-card reveal reveal-delay-2">
+      <div class="role-icon">🔑</div>
+      <h3>Buyers &amp; Leads</h3>
+      <p>Know exactly where you stand in your home journey at all times. Upload documents once, track progress in real time, and close with confidence.</p>
+      <ul class="role-features">
+        <li>Simple document upload portal</li>
+        <li>Step-by-step closing checklist</li>
+        <li>Direct chat with your team</li>
+        <li>E-sign from any device</li>
+        <li>Move-in countdown &amp; reminders</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Platform Features</div>
+  <h2 class="section-title reveal">Everything You Need<br>to Run a Deal</h2>
+  <p class="section-sub reveal reveal-delay-1">A complete toolkit for every phase of the transaction — built in, not bolted on.</p>
+
+  <div class="features-grid reveal">
+    <div class="feat-item">
+      <div class="feat-ico">⚡</div>
+      <h4>Smart Lead Routing</h4>
+      <p>Automatically match leads to the right loan officer and agent based on geography, product type, and capacity.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">📁</div>
+      <h4>Unified Document Hub</h4>
+      <p>One secure place for W2s, bank statements, purchase agreements, and closing disclosures — auto-organized by deal.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">🔔</div>
+      <h4>Milestone Alerts</h4>
+      <p>Real-time notifications keep all parties informed at every stage — appraisal ordered, clear to close, funds disbursed.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">✍️</div>
+      <h4>Built-In E-Sign</h4>
+      <p>Send and receive signatures on any document without leaving the platform. Fully compliant and legally binding.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">📊</div>
+      <h4>Analytics Dashboard</h4>
+      <p>Track close rates, cycle times, lead sources, and revenue per agent with beautiful, actionable reports.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">🔗</div>
+      <h4>CRM &amp; LOS Integrations</h4>
+      <p>Connects to Salesforce, Encompass, Velocify, MLS feeds, and dozens more with pre-built integrations.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">🤝</div>
+      <h4>Partner Co-Branding</h4>
+      <p>Loan officers and agents each get a branded portal to present a seamless, professional experience to clients.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">🔒</div>
+      <h4>Bank-Grade Security</h4>
+      <p>256-bit encryption, SOC 2 Type II compliance, and role-based access controls protect every deal and every document.</p>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico">📱</div>
+      <h4>Mobile-First Design</h4>
+      <p>Full functionality on iOS and Android. Borrowers, agents, and loan officers stay in sync from anywhere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE VISUAL -->
+<section class="pipeline-section">
+  <div class="inner">
+    <div>
+      <div class="section-label">Live Pipeline</div>
+      <h2 class="section-title reveal">Every Deal.<br>One View.</h2>
+      <p class="section-sub reveal reveal-delay-1">No more asking "where is that file?" or "what's the loan status?" NexClose gives your entire team a live, shared view of every active deal.</p>
+      <br><br>
+      <a href="#" class="btn-primary reveal reveal-delay-2">See a Live Demo →</a>
+    </div>
+    <div class="pipeline-demo reveal">
+      <div class="pd-header">
+        <h4>Active Deals</h4>
+        <span class="pd-badge">Live</span>
+      </div>
+      <div class="pd-list">
+        <div class="pd-row">
+          <div class="pd-avatar av1">SM</div>
+          <div class="pd-info">
+            <div class="pd-name">Sarah &amp; Marcus Webb</div>
+            <div class="pd-detail">Conventional · $525,000 · Agent: Torres</div>
+          </div>
+          <span class="pd-status s-active">Active</span>
+        </div>
+        <div class="pd-row">
+          <div class="pd-avatar av2">JR</div>
+          <div class="pd-info">
+            <div class="pd-name">James Rivera</div>
+            <div class="pd-detail">FHA · $298,000 · Agent: Patel</div>
+          </div>
+          <span class="pd-status s-pending">Docs Needed</span>
+        </div>
+        <div class="pd-row">
+          <div class="pd-avatar av3">CK</div>
+          <div class="pd-info">
+            <div class="pd-name">Chen &amp; Kim Family</div>
+            <div class="pd-detail">Jumbo · $1.2M · Agent: Williams</div>
+          </div>
+          <span class="pd-status s-review">Underwriting</span>
+        </div>
+        <div class="pd-row">
+          <div class="pd-avatar av4">AP</div>
+          <div class="pd-info">
+            <div class="pd-name">Anita Patel</div>
+            <div class="pd-detail">VA Loan · $415,000 · Agent: Nakamura</div>
+          </div>
+          <span class="pd-status s-closed">Closing Today</span>
+        </div>
+      </div>
+      <div class="progress-bar">
+        <div class="pb-label"><span>Monthly Pipeline Progress</span><strong>$3.1M / $4.0M</strong></div>
+        <div class="pb-track"><div class="pb-fill" style="width:77%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-label">Testimonials</div>
+  <h2 class="section-title reveal">Loved By the People<br>Who Close Deals</h2>
+
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">NexClose cut our average close time from 38 days to 24. The shared pipeline means I never have to chase a loan officer for a status update again. My buyers love the transparency.</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta2">MT</div>
+        <div>
+          <div class="testi-name">Maria Torres</div>
+          <div class="testi-role">Real Estate Agent, Keller Williams</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">I went from managing 6 different apps to just one. My referral pipeline from real estate agents grew 40% in the first quarter because they can see exactly what's happening on my end.</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta1">DJ</div>
+        <div>
+          <div class="testi-name">David Johnson</div>
+          <div class="testi-role">Senior Loan Officer, CrossCountry Mortgage</div>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="stars">★★★★★</div>
+      <p class="testi-text">As a first-time buyer, I was terrified of the process. NexClose made it feel manageable. I knew exactly what to upload and when, and I could message my whole team in one place.</p>
+      <div class="testi-author">
+        <div class="testi-avatar ta3">AP</div>
+        <div>
+          <div class="testi-name">Alicia Park</div>
+          <div class="testi-role">Homebuyer, Austin TX</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="section-label">Pricing</div>
+  <h2 class="section-title reveal">Simple Pricing.<br>Serious Results.</h2>
+  <p class="section-sub reveal reveal-delay-1">Every plan includes unlimited deals. Start free, scale when you're ready.</p>
+
+  <div class="pricing-grid">
+    <div class="price-card reveal">
+      <div class="price-label">Starter</div>
+      <div class="price-name">Solo Pro</div>
+      <div class="price-amount">
+        <span class="price-currency">$</span>
+        <span class="price-num">49</span>
+      </div>
+      <div class="price-per">per user / month</div>
+      <p class="price-desc">For individual loan officers or agents starting out.</p>
+      <ul class="price-features">
+        <li>Up to 10 active deals</li>
+        <li>Borrower portal</li>
+        <li>Document management</li>
+        <li>E-sign (25 docs/mo)</li>
+        <li>Email &amp; chat support</li>
+      </ul>
+      <a href="#" class="price-btn price-btn-outline">Get Started</a>
+    </div>
+    <div class="price-card featured reveal reveal-delay-1">
+      <span class="feat-badge">Most Popular</span>
+      <div class="price-label">Team</div>
+      <div class="price-name">Growth</div>
+      <div class="price-amount">
+        <span class="price-currency" style="color:var(--gold)">$</span>
+        <span class="price-num">129</span>
+      </div>
+      <div class="price-per">per user / month</div>
+      <p class="price-desc">For growing teams of loan officers and agents working together.</p>
+      <ul class="price-features">
+        <li>Unlimited active deals</li>
+        <li>Full pipeline collaboration</li>
+        <li>Agent + lender co-branding</li>
+        <li>Unlimited e-sign</li>
+        <li>CRM &amp; LOS integrations</li>
+        <li>Analytics &amp; reporting</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="#" class="price-btn price-btn-solid">Start Free Trial</a>
+    </div>
+    <div class="price-card reveal reveal-delay-2">
+      <div class="price-label">Enterprise</div>
+      <div class="price-name">Enterprise</div>
+      <div class="price-amount">
+        <span class="price-num" style="font-size:2rem; padding-top:0.5rem">Custom</span>
+      </div>
+      <div class="price-per">Contact for pricing</div>
+      <p class="price-desc">For large brokerages, banks, and multi-market operations.</p>
+      <ul class="price-features">
+        <li>Everything in Growth</li>
+        <li>White-label branding</li>
+        <li>SSO &amp; advanced security</li>
+        <li>Custom integrations &amp; API</li>
+        <li>Dedicated success manager</li>
+        <li>SLA &amp; compliance support</li>
+      </ul>
+      <a href="#" class="price-btn price-btn-outline">Contact Sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label" style="color:var(--gold); position:relative; z-index:1;">Get Started Today</div>
+  <h2 class="section-title reveal">Ready to Close<br>Faster?</h2>
+  <p>Join over 18,000 loan officers, agents, and their clients who have already made the switch to smarter, simpler real estate transactions.</p>
+  <div class="cta-actions reveal">
+    <a href="#" class="btn-primary">Start Free 14-Day Trial →</a>
+    <a href="#" style="color:rgba(247,244,238,0.6); text-decoration:none; font-size:0.875rem; display:flex; align-items:center; gap:0.4rem; transition:color 0.2s;">
+      No credit card required
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="logo">Nex<span>Close</span></a>
+    <p>The collaborative platform built for loan officers, real estate agents, and the buyers they serve together.</p>
+  </div>
+  <div class="footer-col">
+    <h5>Product</h5>
+    <ul>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Integrations</a></li>
+      <li><a href="#">Changelog</a></li>
+      <li><a href="#">Security</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Company</h5>
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Careers</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Press</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h5>Resources</h5>
+    <ul>
+      <li><a href="#">Help Center</a></li>
+      <li><a href="#">API Docs</a></li>
+      <li><a href="#">Compliance</a></li>
+      <li><a href="#">Partners</a></li>
+      <li><a href="#">Refer &amp; Earn</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 NexClose, Inc. All rights reserved.</span>
+  <span><a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Cookies</a></span>
+</div>
+
+<script>
+  // Intersection Observer for reveal animations
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--ink)' : '';
+    });
+  });
+
+  // Animate the pipeline progress bar when visible
+  const pbFill = document.querySelector('.pb-fill');
+  const pbObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      pbFill.style.width = '77%';
+      pbObs.disconnect();
+    }
+  });
+  if (pbFill) {
+    pbFill.style.width = '0%';
+    pbObs.observe(pbFill);
+  }
+</script>
+
+<!-- NexClose AI Chat Widget -->
+<script>
+  // Point this to your live Railway API URL after deployment
+  window.NEXCLOSE_API_URL = 'https://nexclose-backend.up.railway.app';
+</script>
+<script src="nexclose-chat.js"></script>
+</body>
+</html>
