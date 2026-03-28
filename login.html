@@ -1,294 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NxClose — Login</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--ink:#0d0e13;--cream:#f7f4ee;--gold:#c9a84c;--sage:#3d5c4a;--warm:#fdfbf7;--mid:#6b7280;--error:#dc2626;--success:#16a34a}
-body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--cream);min-height:100vh;display:flex;overflow:hidden}
-.left-panel{width:45%;padding:4rem;display:flex;flex-direction:column;justify-content:center;position:relative;flex-shrink:0}
-.left-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(201,168,76,0.08) 0%,transparent 70%),radial-gradient(ellipse 60% 80% at 80% 20%,rgba(61,92,74,0.06) 0%,transparent 70%)}
-.grid-lines{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);background-size:60px 60px}
-.left-content{position:relative;z-index:1}
-.brand{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--cream);text-decoration:none;letter-spacing:-0.02em;display:block;margin-bottom:3rem}
-.brand span{color:var(--gold)}
-.left-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem}
-.left-title em{font-style:normal;color:var(--gold)}
-.left-sub{font-size:1rem;font-weight:300;color:rgba(247,244,238,0.6);line-height:1.75;max-width:360px;margin-bottom:3rem}
-.feature-list{display:flex;flex-direction:column;gap:1rem}
-.feature-item{display:flex;align-items:center;gap:0.75rem;font-size:0.875rem;color:rgba(247,244,238,0.7)}
-.feature-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
-.right-panel{flex:1;background:var(--warm);display:flex;align-items:center;justify-content:center;padding:3rem 4rem;border-radius:24px 0 0 24px;overflow-y:auto}
-.form-container{width:100%;max-width:420px}
-.tabs{display:flex;background:rgba(13,14,19,0.06);border-radius:10px;padding:4px;margin-bottom:2rem}
-.tab-btn{flex:1;padding:0.6rem;border:none;background:transparent;border-radius:7px;cursor:pointer;font-size:0.875rem;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--mid);transition:all 0.2s}
-.tab-btn.active{background:var(--ink);color:var(--cream);box-shadow:0 2px 8px rgba(13,14,19,0.15)}
-.form-title{font-family:'Playfair Display',serif;font-size:1.75rem;font-weight:700;color:var(--ink);margin-bottom:0.4rem;letter-spacing:-0.02em}
-.form-sub{font-size:0.875rem;color:var(--mid);margin-bottom:1.5rem;line-height:1.6}
-.form-panel{display:none}
-.form-panel.active{display:block}
-.oauth-btn{width:100%;padding:0.8rem 1rem;border:1px solid #e2e2e2;border-radius:10px;background:white;display:flex;align-items:center;gap:0.85rem;font-size:0.9rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.18s;color:#1a1a1a;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:0.65rem}
-.oauth-btn:hover{border-color:#bbb;box-shadow:0 3px 10px rgba(0,0,0,0.12);background:#fafafa}
-.oauth-btn-label{flex:1;text-align:center}
-.divider{display:flex;align-items:center;gap:1rem;margin:1.25rem 0;color:var(--mid);font-size:0.8rem}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(13,14,19,0.1)}
-.field-group{margin-bottom:1.25rem}
-.field-label{display:block;font-size:0.8rem;font-weight:600;color:var(--ink);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.06em}
-.field-input{width:100%;padding:0.8rem 1rem;border:1.5px solid rgba(13,14,19,0.12);border-radius:8px;font-size:0.9rem;font-family:'DM Sans',sans-serif;background:white;color:var(--ink);transition:border-color 0.2s,box-shadow 0.2s;outline:none}
-.field-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12)}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.role-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.25rem}
-.role-btn{padding:0.75rem 0.5rem;border-radius:8px;border:1.5px solid rgba(13,14,19,0.12);background:white;cursor:pointer;font-size:0.75rem;font-weight:600;font-family:'DM Sans',sans-serif;color:var(--mid);text-align:center;transition:all 0.2s}
-.role-btn .role-icon{display:block;font-size:1.2rem;margin-bottom:0.3rem}
-.role-btn.selected{border-color:var(--gold);background:rgba(201,168,76,0.08);color:var(--ink)}
-.submit-btn{width:100%;padding:0.9rem;background:var(--ink);color:var(--cream);border:none;border-radius:8px;font-size:0.9rem;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:0.04em;text-transform:uppercase;transition:all 0.25s;margin-top:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.5rem}
-.submit-btn:hover{background:var(--sage);transform:translateY(-1px);box-shadow:0 6px 20px rgba(13,14,19,0.2)}
-.submit-btn:disabled{background:#9ca3af;transform:none;cursor:not-allowed}
-.submit-btn.loading{pointer-events:none}
-.spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(247,244,238,0.3);border-top-color:var(--cream);animation:spin 0.7s linear infinite;display:none}
-.submit-btn.loading .spinner{display:block}
-.submit-btn.loading .btn-text{opacity:0.7}
-@keyframes spin{to{transform:rotate(360deg)}}
-.alert{padding:0.75rem 1rem;border-radius:8px;font-size:0.85rem;margin-bottom:1rem;display:none;align-items:center;gap:0.5rem}
-.alert.show{display:flex}
-.alert.error{background:rgba(220,38,38,0.08);color:var(--error);border:1px solid rgba(220,38,38,0.2)}
-.alert.success{background:rgba(22,163,74,0.08);color:var(--success);border:1px solid rgba(22,163,74,0.2)}
-.switch-text{text-align:center;font-size:0.85rem;color:var(--mid);margin-top:1.25rem}
-.switch-text a{color:var(--ink);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
-#dashboard-view{display:none;width:100%;min-height:100vh;background:var(--cream)}
-.dash-nav{background:var(--ink);padding:1rem 2rem;display:flex;align-items:center;gap:1rem}
-.dash-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:var(--cream);text-decoration:none}
-.dash-logo span{color:var(--gold)}
-.dash-user{margin-left:auto;display:flex;align-items:center;gap:0.75rem}
-.dash-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#8a6820);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:var(--ink)}
-.dash-name{font-size:0.875rem;color:rgba(247,244,238,0.8)}
-.dash-role-badge{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:0.25rem 0.65rem;border-radius:100px;background:rgba(201,168,76,0.15);color:var(--gold)}
-.logout-btn{background:none;border:1px solid rgba(247,244,238,0.15);color:rgba(247,244,238,0.6);padding:0.4rem 0.9rem;border-radius:6px;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
-.logout-btn:hover{background:rgba(255,255,255,0.08);color:var(--cream)}
-.dash-body{padding:2.5rem}
-.dash-welcome{margin-bottom:2rem}
-.dash-welcome h1{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--ink);margin-bottom:0.3rem}
-.dash-welcome p{font-size:0.9rem;color:var(--mid)}
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem}
-.stat-card{background:white;border-radius:12px;padding:1.25rem 1.5rem;border:1px solid rgba(201,168,76,0.12)}
-.stat-card .num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:0.25rem}
-.stat-card .lbl{font-size:0.8rem;color:var(--mid)}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.dash-card{background:white;border-radius:12px;padding:1.5rem;border:1px solid rgba(201,168,76,0.12)}
-.dash-card h3{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:1rem}
-.empty-state{text-align:center;padding:2rem;color:var(--mid);font-size:0.875rem}
-.empty-state .icon{font-size:2rem;margin-bottom:0.5rem}
-@media(max-width:768px){body{flex-direction:column;overflow:auto}.left-panel{display:none}.right-panel{border-radius:0;padding:2rem 1.5rem;min-height:100vh}.stats-row{grid-template-columns:1fr 1fr}.dash-grid{grid-template-columns:1fr}.dash-body{padding:1.5rem}}
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2685.3">
+  <style type="text/css">
+    body {background-color: #0c0c10}
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #f5f1ea; -webkit-text-stroke: #f5f1ea; min-height: 15.0px}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 24.0px 'Helvetica Neue'; color: #bc993c; -webkit-text-stroke: #bc993c}
+    p.p4 {margin: 0.0px 0.0px 36.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #f5f1ea; color: rgba(245, 241, 234, 0.6); -webkit-text-stroke: rgba(245, 241, 234, 0.6)}
+    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.5px 'Helvetica Neue'; color: #f5f1ea; color: rgba(245, 241, 234, 0.7); -webkit-text-stroke: rgba(245, 241, 234, 0.7); background-color: #bc993c; min-height: 12.0px}
+    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.5px 'Helvetica Neue'; color: #f5f1ea; color: rgba(245, 241, 234, 0.7); -webkit-text-stroke: rgba(245, 241, 234, 0.7); background-color: #0c0c10}
+    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 10.5px 'Helvetica Neue'; color: #f5f1ea; color: rgba(245, 241, 234, 0.7); -webkit-text-stroke: rgba(245, 241, 234, 0.7)}
+    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.5px 'Helvetica Neue'; color: #f5f1ea; -webkit-text-stroke: #f5f1ea; background-color: #0c0c10}
+    p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.5px 'Helvetica Neue'; color: #585e6d; -webkit-text-stroke: #585e6d}
+    p.p11 {margin: 0.0px 0.0px 18.0px 0.0px; font: 10.5px 'Helvetica Neue'; color: #585e6d; -webkit-text-stroke: #585e6d}
+    p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.8px 'Helvetica Neue'; color: #141414; -webkit-text-stroke: #141414; min-height: 12.0px}
+    p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.8px 'Helvetica Neue'; color: #141414; -webkit-text-stroke: #141414}
+    p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.6px 'Helvetica Neue'; color: #585e6d; -webkit-text-stroke: #585e6d}
+    p.p15 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.6px 'Helvetica Neue'; color: #0c0c10; -webkit-text-stroke: #0c0c10}
+    p.p16 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.8px 'Helvetica Neue'; color: #f5f1ea; -webkit-text-stroke: #f5f1ea}
+    p.p17 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 10.2px 'Helvetica Neue'; color: #585e6d; -webkit-text-stroke: #585e6d}
+    span.s1 {font-kerning: none}
+    span.s2 {font-kerning: none; color: #f5f1ea; background-color: #0c0c10; -webkit-text-stroke: 0px #f5f1ea}
+    span.s3 {font-kerning: none; color: #bc993c; -webkit-text-stroke: 0px #bc993c}
+    span.s4 {font-kerning: none; background-color: #0c0c10}
+    span.s5 {font-kerning: none; color: #bc993c; background-color: #0c0c10; -webkit-text-stroke: 0px #bc993c}
+    span.s6 {font-kerning: none; background-color: rgba(12, 12, 16, 0.059)}
+    span.s7 {font-kerning: none; background-color: #fcfaf5}
+    span.s8 {font-kerning: none; background-color: #ffffff}
+    span.s9 {text-decoration: underline ; font-kerning: none; color: #0c0c10; background-color: #fcfaf5; -webkit-text-stroke: 0px #0c0c10}
+  </style>
 </head>
 <body>
-<div id="auth-view" style="display:flex;width:100%;min-height:100vh;">
-  <div class="left-panel">
-    <div class="left-bg"></div>
-    <div class="grid-lines"></div>
-    <div class="left-content">
-      <a href="index.html" class="brand">Nx<span>Close</span></a>
-      <h1 class="left-title">Close Deals<br><em>Faster.</em><br>Together.</h1>
-      <p class="left-sub">The platform that connects loan officers, real estate agents, and buyers in one seamless workflow.</p>
-      <div class="feature-list">
-        <div class="feature-item"><div class="feature-dot"></div>Unified deal pipeline</div>
-        <div class="feature-item"><div class="feature-dot"></div>Real-time team messaging</div>
-        <div class="feature-item"><div class="feature-dot"></div>Document management & e-sign</div>
-        <div class="feature-item"><div class="feature-dot"></div>Automated milestone alerts</div>
-      </div>
-    </div>
-  </div>
-  <div class="right-panel">
-    <div class="form-container">
-      <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
-        <button class="tab-btn" onclick="switchTab('register')">Create Account</button>
-      </div>
-      <div class="alert" id="alert"></div>
-      <div class="form-panel active" id="login-panel">
-        <h2 class="form-title">Welcome back</h2>
-        <p class="form-sub">Sign in to your NxClose account</p>
-        <button class="oauth-btn" onclick="signInWithGoogle()">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          <span class="oauth-btn-label">Continue with Google</span>
-        </button>
-        <button class="oauth-btn" onclick="signInWithMicrosoft()">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M11.4 24H0V12.6h11.4V24z" fill="#F1511B"/><path d="M24 24H12.6V12.6H24V24z" fill="#80CC28"/><path d="M11.4 11.4H0V0h11.4v11.4z" fill="#00ADEF"/><path d="M24 11.4H12.6V0H24v11.4z" fill="#FBBC09"/></svg>
-          <span class="oauth-btn-label">Continue with Microsoft</span>
-        </button>
-        <div class="divider">or sign in with email</div>
-        <div class="field-group">
-          <label class="field-label">Email Address</label>
-          <input type="email" class="field-input" id="login-email" placeholder="you@example.com" autocomplete="email"/>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Password</label>
-          <input type="password" class="field-input" id="login-password" placeholder="Your password" autocomplete="current-password"/>
-        </div>
-        <button class="submit-btn" id="login-btn" onclick="handleLogin()">
-          <div class="spinner"></div><span class="btn-text">Sign In →</span>
-        </button>
-        <div class="switch-text">Don't have an account? <a onclick="switchTab('register')">Create one free</a></div>
-      </div>
-      <div class="form-panel" id="register-panel">
-        <h2 class="form-title">Get started free</h2>
-        <p class="form-sub">Create your NxClose account in seconds</p>
-        <button class="oauth-btn" onclick="signInWithGoogle()">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-          <span class="oauth-btn-label">Sign up with Google</span>
-        </button>
-        <button class="oauth-btn" onclick="signInWithMicrosoft()">
-          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M11.4 24H0V12.6h11.4V24z" fill="#F1511B"/><path d="M24 24H12.6V12.6H24V24z" fill="#80CC28"/><path d="M11.4 11.4H0V0h11.4v11.4z" fill="#00ADEF"/><path d="M24 11.4H12.6V0H24v11.4z" fill="#FBBC09"/></svg>
-          <span class="oauth-btn-label">Sign up with Microsoft</span>
-        </button>
-        <div class="divider">or create with email</div>
-        <div style="margin-bottom:0.5rem;"><label class="field-label">I am a</label></div>
-        <div class="role-selector">
-          <button class="role-btn selected" data-role="loan_officer" onclick="selectRole(this)"><span class="role-icon">🏦</span>Loan Officer</button>
-          <button class="role-btn" data-role="agent" onclick="selectRole(this)"><span class="role-icon">🏡</span>RE Agent</button>
-          <button class="role-btn" data-role="buyer" onclick="selectRole(this)"><span class="role-icon">🔑</span>Buyer</button>
-        </div>
-        <div class="field-row">
-          <div class="field-group"><label class="field-label">First Name</label><input type="text" class="field-input" id="reg-first" placeholder="John" autocomplete="given-name"/></div>
-          <div class="field-group"><label class="field-label">Last Name</label><input type="text" class="field-input" id="reg-last" placeholder="Smith" autocomplete="family-name"/></div>
-        </div>
-        <div class="field-group"><label class="field-label">Email Address</label><input type="email" class="field-input" id="reg-email" placeholder="you@example.com" autocomplete="email"/></div>
-        <div class="field-group"><label class="field-label">Company / Brokerage</label><input type="text" class="field-input" id="reg-company" placeholder="Optional"/></div>
-        <div class="field-group"><label class="field-label">Password</label><input type="password" class="field-input" id="reg-password" placeholder="Minimum 8 characters" autocomplete="new-password"/></div>
-        <button class="submit-btn" id="register-btn" onclick="handleRegister()">
-          <div class="spinner"></div><span class="btn-text">Create Account →</span>
-        </button>
-        <div class="switch-text">Already have an account? <a onclick="switchTab('login')">Sign in</a></div>
-      </div>
-    </div>
-  </div>
-</div>
-<div id="dashboard-view">
-  <nav class="dash-nav">
-    <a href="index.html" class="dash-logo">Nx<span>Close</span></a>
-    <div class="dash-user">
-      <div class="dash-avatar" id="dash-avatar">P</div>
-      <span class="dash-name" id="dash-name">Loading...</span>
-      <span class="dash-role-badge" id="dash-role">—</span>
-      <button class="logout-btn" onclick="handleLogout()">Log Out</button>
-    </div>
-  </nav>
-  <div class="dash-body">
-    <div class="dash-welcome"><h1 id="dash-greeting">Welcome back!</h1><p>Here's your NxClose pipeline overview</p></div>
-    <div class="stats-row">
-      <div class="stat-card"><div class="num">0</div><div class="lbl">Active Deals</div></div>
-      <div class="stat-card"><div class="num">0</div><div class="lbl">Leads</div></div>
-      <div class="stat-card"><div class="num">0</div><div class="lbl">Documents</div></div>
-      <div class="stat-card"><div class="num">0</div><div class="lbl">Unread Messages</div></div>
-    </div>
-    <div class="dash-grid">
-      <div class="dash-card"><h3>Recent Deals</h3><div class="empty-state"><div class="icon">🏠</div><div>No deals yet</div></div></div>
-      <div class="dash-card"><h3>Recent Messages</h3><div class="empty-state"><div class="icon">💬</div><div>No messages yet</div></div></div>
-      <div class="dash-card"><h3>Pending Documents</h3><div class="empty-state"><div class="icon">📁</div><div>No pending documents</div></div></div>
-      <div class="dash-card"><h3>Notifications</h3><div class="empty-state"><div class="icon">🔔</div><div>You're all caught up</div></div></div>
-    </div>
-  </div>
-</div>
-<script>
-  const API='https://nexclose-backend-production.up.railway.app';
-  const SUPABASE_URL='https://dnqymhwlejfvcrtywhpw.supabase.co';
-  const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRucXltaHdsZWpmdmNydHl3aHB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1Nzk4NTAsImV4cCI6MjA5MDE1NTg1MH0.RlLWBgTiPUFVmPLo8K8lIpJI6YQSeJXpBjWH_Es2z6k';
-  const {createClient}=supabase;
-  const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
-  let selectedRole='loan_officer';
-  let authToken=localStorage.getItem('nc_token');
-  let currentUser=JSON.parse(localStorage.getItem('nc_user')||'null');
-  if(authToken&&currentUser)showDashboard(currentUser);
-  sb.auth.onAuthStateChange(async(event,session)=>{
-    if(event==='SIGNED_IN'&&session){
-      const user=session.user;
-      const displayName=user.user_metadata?.full_name||user.email;
-      const firstName=displayName.split(' ')[0]||'User';
-      const lastName=displayName.split(' ').slice(1).join(' ')||'User';
-      try{
-        const res=await fetch(API+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:user.email,password:session.access_token.slice(0,20)+'Oauth!',first_name:firstName,last_name:lastName,role:'buyer'})});
-        const data=await res.json();
-        if(data.accessToken){localStorage.setItem('nc_token',data.accessToken);localStorage.setItem('nc_user',JSON.stringify(data.user));showDashboard(data.user);return;}
-      }catch{}
-      try{
-        const res=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:user.email,password:session.access_token.slice(0,20)+'Oauth!'})});
-        const data=await res.json();
-        if(data.accessToken){localStorage.setItem('nc_token',data.accessToken);localStorage.setItem('nc_user',JSON.stringify(data.user));showDashboard(data.user);}
-      }catch{}
-    }
-  });
-  async function signInWithGoogle(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});}
-  async function signInWithMicrosoft(){await sb.auth.signInWithOAuth({provider:'azure',options:{scopes:'email',redirectTo:window.location.href}});}
-  function switchTab(tab){document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('active',(i===0)===(tab==='login'));});document.getElementById('login-panel').classList.toggle('active',tab==='login');document.getElementById('register-panel').classList.toggle('active',tab==='register');clearAlert();}
-  function selectRole(btn){document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedRole=btn.dataset.role;}
-  function showAlert(msg,type='error'){const el=document.getElementById('alert');el.textContent=msg;el.className=`alert ${type} show`;}
-  function clearAlert(){document.getElementById('alert').className='alert';}
-  async function handleLogin(){
-    const email=document.getElementById('login-email').value.trim();
-    const password=document.getElementById('login-password').value;
-    clearAlert();
-    if(!email||!password)return showAlert('Please enter your email and password.');
-    const btn=document.getElementById('login-btn');
-    btn.classList.add('loading');btn.disabled=true;
-    try{
-      const res=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
-      const data=await res.json();
-      if(!res.ok){showAlert(data.error||'Invalid email or password.');return;}
-      localStorage.setItem('nc_token',data.accessToken);
-      localStorage.setItem('nc_refresh',data.refreshToken);
-      localStorage.setItem('nc_user',JSON.stringify(data.user));
-      showDashboard(data.user);
-    }catch{showAlert('Connection error. Please try again.');}
-    finally{btn.classList.remove('loading');btn.disabled=false;}
-  }
-  async function handleRegister(){
-    const first_name=document.getElementById('reg-first').value.trim();
-    const last_name=document.getElementById('reg-last').value.trim();
-    const email=document.getElementById('reg-email').value.trim();
-    const password=document.getElementById('reg-password').value;
-    const company=document.getElementById('reg-company').value.trim();
-    clearAlert();
-    if(!first_name||!last_name)return showAlert('Please enter your full name.');
-    if(!email)return showAlert('Please enter your email address.');
-    if(password.length<8)return showAlert('Password must be at least 8 characters.');
-    const btn=document.getElementById('register-btn');
-    btn.classList.add('loading');btn.disabled=true;
-    try{
-      const res=await fetch(API+'/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({first_name,last_name,email,password,role:selectedRole,company})});
-      const data=await res.json();
-      if(!res.ok){showAlert(data.errors?.[0]?.msg||data.error||'Registration failed.');return;}
-      localStorage.setItem('nc_token',data.accessToken);
-      localStorage.setItem('nc_refresh',data.refreshToken);
-      localStorage.setItem('nc_user',JSON.stringify(data.user));
-      showAlert('Welcome to NxClose, '+first_name+'! 🎉','success');
-      setTimeout(()=>showDashboard(data.user),800);
-    }catch{showAlert('Connection error. Please try again.');}
-    finally{btn.classList.remove('loading');btn.disabled=false;}
-  }
-  function showDashboard(user){
-    document.getElementById('auth-view').style.display='none';
-    document.getElementById('dashboard-view').style.display='block';
-    document.body.style.background='var(--cream)';
-    const initials=(user.first_name[0]+user.last_name[0]).toUpperCase();
-    const roleLabel={loan_officer:'Loan Officer',agent:'RE Agent',buyer:'Buyer',admin:'Admin'}[user.role]||user.role;
-    document.getElementById('dash-greeting').textContent='Welcome back, '+user.first_name+'!';
-    document.getElementById('dash-name').textContent=user.first_name+' '+user.last_name;
-    document.getElementById('dash-role').textContent=roleLabel;
-    document.getElementById('dash-avatar').textContent=initials;
-  }
-  async function handleLogout(){
-    await sb.auth.signOut();
-    localStorage.clear();
-    document.getElementById('dashboard-view').style.display='none';
-    document.getElementById('auth-view').style.display='flex';
-    document.body.style.background='var(--ink)';
-  }
-  document.addEventListener('keydown',(e)=>{if(e.key!=='Enter')return;if(document.getElementById('login-panel').classList.contains('active'))handleLogin();else handleRegister();});
-</script>
+<p class="p1"><span class="s1"></span><br></p>
+<p class="p1"><span class="s1"></span><br></p>
+<p class="p2"><span class="s2"><a href="file:///Users/pascualdelrosario/Desktop/nxclose-frontend/index.html">Nx<span class="s3">Close</span></a></span></p>
+<h1 style="margin: 0.0px 0.0px 15.0px 0.0px; font: 28.0px 'Helvetica Neue'; color: #f5f1ea; -webkit-text-stroke: #f5f1ea"><span class="s4">Close Deals</span><span class="s1"><br>
+</span><span class="s5">Faster.</span><span class="s1"><br>
+</span><span class="s4">Together.</span></h1>
+<p class="p4"><span class="s4">The platform that connects loan officers, real estate agents, and buyers in one seamless workflow.</span></p>
+<p class="p5"><span class="s1"></span><br></p>
+<p class="p6"><span class="s1">Unified deal pipeline</span></p>
+<p class="p5"><span class="s1"></span><br></p>
+<p class="p6"><span class="s1">Real-time team messaging</span></p>
+<p class="p5"><span class="s1"></span><br></p>
+<p class="p6"><span class="s1">Document management &amp; e-sign</span></p>
+<p class="p5"><span class="s1"></span><br></p>
+<p class="p7"><span class="s4">Automated milestone alerts</span></p>
+<p class="p8"><span class="s1">Sign In</span></p>
+<p class="p9"><span class="s6">Create Account</span></p>
+<h2 style="margin: 0.0px 0.0px 4.8px 0.0px; font: 21.0px 'Helvetica Neue'; color: #0c0c10; -webkit-text-stroke: #0c0c10"><span class="s7">Welcome back</span></h2>
+<p class="p11"><span class="s7">Sign in to your NxClose account</span></p>
+<p class="p12"><span class="s1"></span><br></p>
+<p class="p13"><span class="s8">Continue with Google</span></p>
+<p class="p12"><span class="s1"></span><br></p>
+<p class="p13"><span class="s8">Continue with Microsoft</span></p>
+<p class="p14"><span class="s7">or sign in with email</span></p>
+<p class="p15"><span class="s7">EMAIL ADDRESS</span></p>
+<p class="p15"><span class="s7">PASSWORD</span></p>
+<p class="p16"><span class="s4">SIGN IN →</span></p>
+<p class="p17"><span class="s7">Don't have an account? </span><span class="s9">Create one free</span></p>
 </body>
 </html>
