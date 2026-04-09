@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NxClose — You're Invited</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0d0e13; --cream: #f7f4ee; --gold: #c9a84c;
+    --gold-light: #e8cc7e; --sage: #3d5c4a; --warm: #fdfbf7;
+    --mid: #6b7280; --error: #dc2626; --success: #16a34a;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--ink); color: var(--cream); min-height: 100vh; display: flex; }
+
+  /* LEFT PANEL */
+  .left-panel { width: 45%; padding: 4rem; display: flex; flex-direction: column; justify-content: center; position: relative; flex-shrink: 0; }
+  .left-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 70%); }
+  .grid-lines { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px); background-size: 60px 60px; }
+  .left-content { position: relative; z-index: 1; }
+  .brand { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--cream); text-decoration: none; letter-spacing: -0.02em; display: block; margin-bottom: 3rem; }
+  .brand span { color: var(--gold); }
+
+  /* AGENT CARD */
+  .agent-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(201,168,76,0.2); border-radius: 16px; padding: 1.75rem; margin-bottom: 2rem; }
+  .agent-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), #8a6820); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
+  .agent-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .agent-role { font-size: 0.85rem; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+  .agent-company { font-size: 0.9rem; color: rgba(247,244,238,0.6); }
+  .invite-msg { font-size: 1rem; font-weight: 300; color: rgba(247,244,238,0.7); line-height: 1.75; margin-bottom: 2rem; }
+  .invite-msg strong { color: var(--cream); font-weight: 500; }
+  .feature-list { display: flex; flex-direction: column; gap: 0.85rem; }
+  .feature-item { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: rgba(247,244,238,0.7); }
+  .feature-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+
+  /* RIGHT PANEL */
+  .right-panel { flex: 1; background: var(--warm); display: flex; align-items: center; justify-content: center; padding: 3rem 4rem; border-radius: 24px 0 0 24px; overflow-y: auto; }
+  .form-container { width: 100%; max-width: 420px; }
+  .form-title { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+  .form-sub { font-size: 0.875rem; color: var(--mid); margin-bottom: 1.75rem; line-height: 1.6; }
+
+  /* FIELDS */
+  .field-group { margin-bottom: 1.25rem; }
+  .field-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .field-input { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid rgba(13,14,19,0.12); border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; background: white; color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+  .field-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  /* CONNECTED BANNER */
+  .connected-banner { background: rgba(61,92,74,0.08); border: 1px solid rgba(61,92,74,0.2); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .connected-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+  .connected-text { font-size: 0.85rem; color: var(--sage); font-weight: 500; }
+
+  /* SUBMIT */
+  .submit-btn { width: 100%; padding: 0.9rem; background: var(--ink); color: var(--cream); border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 700; font-family: 'DM Sans', sans-serif; cursor: pointer; letter-spacing: 0.04em; text-transform: uppercase; transition: all 0.25s; margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+  .submit-btn:hover { background: var(--sage); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,14,19,0.2); }
+  .submit-btn:disabled { background: #9ca3af; transform: none; cursor: not-allowed; }
+  .submit-btn.loading { pointer-events: none; }
+  .spinner { width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(247,244,238,0.3); border-top-color: var(--cream); animation: spin 0.7s linear infinite; display: none; }
+  .submit-btn.loading .spinner { display: block; }
+  .submit-btn.loading .btn-text { opacity: 0.7; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ALERT */
+  .alert { padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+  .alert.show { display: block; }
+  .alert.error { background: rgba(220,38,38,0.08); color: var(--error); border: 1px solid rgba(220,38,38,0.2); }
+  .alert.success { background: rgba(22,163,74,0.08); color: var(--success); border: 1px solid rgba(22,163,74,0.2); }
+
+  .login-link { text-align: center; font-size: 0.85rem; color: var(--mid); margin-top: 1.25rem; }
+  .login-link a { color: var(--ink); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* INVALID STATE */
+  #invalid-view { display: none; text-align: center; padding: 3rem 2rem; }
+  #invalid-view h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.75rem; color: var(--ink); }
+  #invalid-view p { color: var(--mid); font-size: 0.9rem; }
+
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .left-panel { display: none; }
+    .right-panel { border-radius: 0; padding: 2rem 1.5rem; min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="left-bg"></div>
+  <div class="grid-lines"></div>
+  <div class="left-content">
+    <a href="index.html" class="brand">Nx<span>Close</span></a>
+    <div class="agent-card" id="agent-card" style="display:none;">
+      <div class="agent-avatar" id="agent-avatar">?</div>
+      <div class="agent-name" id="agent-name">Loading...</div>
+      <div class="agent-role" id="agent-role"></div>
+      <div class="agent-company" id="agent-company"></div>
+    </div>
+    <p class="invite-msg" id="invite-msg" style="display:none;">
+      You've been personally invited to join NxClose.<br><br>
+      Create your account below and you'll be <strong>automatically connected</strong> to your agent so you can track your deal in real time.
+    </p>
+    <div class="feature-list">
+      <div class="feature-item"><div class="feature-dot"></div>Track your deal in real time</div>
+      <div class="feature-item"><div class="feature-dot"></div>Sign documents electronically</div>
+      <div class="feature-item"><div class="feature-dot"></div>Message your agent directly</div>
+      <div class="feature-item"><div class="feature-dot"></div>Get milestone alerts instantly</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="form-container">
+
+    <div id="invalid-view">
+      <h2>Invalid Invite Link</h2>
+      <p>This invite link is not valid or has expired. Please ask your agent or loan officer for a new one.</p>
+    </div>
+
+    <div id="register-view" style="display:none;">
+      <h2 class="form-title">Create your account</h2>
+      <p class="form-sub">Join NxClose to track your home purchase from start to finish.</p>
+
+      <div class="connected-banner" id="connected-banner" style="display:none;">
+        <div class="connected-dot"></div>
+        <span class="connected-text" id="connected-text">You'll be connected to your agent</span>
+      </div>
+
+      <div class="alert" id="alert"></div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">First Name</label>
+          <input type="text" class="field-input" id="reg-first" placeholder="John" autocomplete="given-name"/>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Last Name</label>
+          <input type="text" class="field-input" id="reg-last" placeholder="Smith" autocomplete="family-name"/>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Email Address</label>
+        <input type="email" class="field-input" id="reg-email" placeholder="you@example.com" autocomplete="email"/>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Password</label>
+        <input type="password" class="field-input" id="reg-password" placeholder="Minimum 8 characters" autocomplete="new-password"/>
+      </div>
+
+      <button class="submit-btn" id="register-btn" onclick="handleRegister()">
+        <div class="spinner"></div>
+        <span class="btn-text">Create Account →</span>
+      </button>
+
+      <div class="login-link">Already have an account? <a href="login.html">Sign in</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = 'https://nexclose-backend-production.up.railway.app';
+
+  // Get invite code from URL: nxclose.com/invite.html?code=abc123
+  const params     = new URLSearchParams(window.location.search);
+  const inviteCode = params.get('code');
+  let   inviterData = null;
+
+  async function init() {
+    if (!inviteCode) { showInvalid(); return; }
+    try {
+      const res  = await fetch(`${API}/api/invite/${inviteCode}`);
+      const data = await res.json();
+      if (!res.ok) { showInvalid(); return; }
+      inviterData = data;
+      showInvite(data);
+    } catch { showInvalid(); }
+  }
+
+  function showInvalid() {
+    document.getElementById('invalid-view').style.display = 'block';
+  }
+
+  function showInvite(inviter) {
+    const roleLabels = { loan_officer: 'Loan Officer', agent: 'Real Estate Agent' };
+    const initials   = `${inviter.first_name[0]}${inviter.last_name[0]}`.toUpperCase();
+
+    document.getElementById('agent-avatar').textContent  = initials;
+    document.getElementById('agent-name').textContent    = `${inviter.first_name} ${inviter.last_name}`;
+    document.getElementById('agent-role').textContent    = roleLabels[inviter.role] || inviter.role;
+    document.getElementById('agent-company').textContent = inviter.company || '';
+    document.getElementById('agent-card').style.display  = 'block';
+    document.getElementById('invite-msg').style.display  = 'block';
+
+    document.getElementById('connected-text').textContent = `You'll be connected to ${inviter.first_name} ${inviter.last_name}`;
+    document.getElementById('connected-banner').style.display = 'flex';
+    document.getElementById('register-view').style.display    = 'block';
+  }
+
+  async function handleRegister() {
+    const first_name = document.getElementById('reg-first').value.trim();
+    const last_name  = document.getElementById('reg-last').value.trim();
+    const email      = document.getElementById('reg-email').value.trim();
+    const password   = document.getElementById('reg-password').value;
+    clearAlert();
+
+    if (!first_name || !last_name) return showAlert('Please enter your full name.');
+    if (!email)                    return showAlert('Please enter your email address.');
+    if (password.length < 8)       return showAlert('Password must be at least 8 characters.');
+
+    const btn = document.getElementById('register-btn');
+    btn.classList.add('loading'); btn.disabled = true;
+
+    try {
+      const res  = await fetch(`${API}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name, last_name, email, password,
+          role: 'buyer',
+          invite_code: inviteCode,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showAlert(data.errors?.[0]?.msg || data.error || 'Registration failed.'); return; }
+      localStorage.setItem('nc_token', data.accessToken);
+      localStorage.setItem('nc_refresh', data.refreshToken);
+      localStorage.setItem('nc_user', JSON.stringify(data.user));
+      showAlert(`Welcome to NxClose, ${first_name}! 🎉`, 'success');
+      setTimeout(() => window.location.href = 'login.html', 1200);
+    } catch { showAlert('Connection error. Please try again.'); }
+    finally { btn.classList.remove('loading'); btn.disabled = false; }
+  }
+
+  function showAlert(msg, type = 'error') {
+    const el = document.getElementById('alert');
+    el.textContent = msg;
+    el.className   = `alert ${type} show`;
+  }
+  function clearAlert() { document.getElementById('alert').className = 'alert'; }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') handleRegister(); });
+
+  init();
+</script>
+</body>
+</html>

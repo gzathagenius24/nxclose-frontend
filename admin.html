@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NxClose — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0d0e13; --cream: #f7f4ee; --gold: #c9a84c;
+    --sage: #3d5c4a; --warm: #fdfbf7; --mid: #6b7280;
+    --error: #dc2626; --success: #16a34a; --border: rgba(201,168,76,0.15);
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  /* NAV */
+  .nav { background: var(--ink); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 900; color: var(--cream); text-decoration: none; }
+  .nav-logo span { color: var(--gold); }
+  .nav-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.2rem 0.6rem; border-radius: 100px; background: rgba(201,168,76,0.2); color: var(--gold); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+  .nav-user { font-size: 0.85rem; color: rgba(247,244,238,0.6); }
+  .logout-btn { background: none; border: 1px solid rgba(247,244,238,0.15); color: rgba(247,244,238,0.6); padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .logout-btn:hover { background: rgba(255,255,255,0.08); color: var(--cream); }
+
+  /* BODY */
+  .page { padding: 2.5rem; max-width: 1200px; margin: 0 auto; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .page-sub { font-size: 0.9rem; color: var(--mid); margin-bottom: 2rem; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: white; border-radius: 12px; padding: 1.25rem 1.5rem; border: 1px solid var(--border); }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--gold); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-lbl { font-size: 0.8rem; color: var(--mid); }
+
+  /* CONTROLS */
+  .controls { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center; flex-wrap: wrap; }
+  .search-input { flex: 1; min-width: 200px; padding: 0.65rem 1rem; border: 1.5px solid rgba(13,14,19,0.12); border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; }
+  .search-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+  .filter-select { padding: 0.65rem 1rem; border: 1.5px solid rgba(13,14,19,0.12); border-radius: 8px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; outline: none; background: white; cursor: pointer; }
+  .filter-select:focus { border-color: var(--gold); }
+
+  /* TABLE */
+  .table-wrap { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: rgba(13,14,19,0.03); }
+  th { padding: 0.85rem 1.25rem; text-align: left; font-size: 0.75rem; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+  td { padding: 0.9rem 1.25rem; font-size: 0.875rem; border-bottom: 1px solid rgba(13,14,19,0.05); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(201,168,76,0.03); }
+  .role-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 100px; }
+  .role-loan_officer { background: rgba(201,168,76,0.12); color: #8a6820; }
+  .role-agent { background: rgba(61,92,74,0.12); color: var(--sage); }
+  .role-buyer { background: rgba(59,130,246,0.1); color: #1d4ed8; }
+  .role-admin { background: rgba(220,38,38,0.1); color: var(--error); }
+  .user-name { font-weight: 500; }
+  .user-email { font-size: 0.8rem; color: var(--mid); }
+  .delete-btn { background: none; border: 1px solid rgba(220,38,38,0.25); color: var(--error); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .delete-btn:hover { background: rgba(220,38,38,0.06); border-color: var(--error); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(13,14,19,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 400px; width: 90%; }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .modal p { font-size: 0.9rem; color: var(--mid); margin-bottom: 1.5rem; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; }
+  .btn-cancel { background: none; border: 1.5px solid rgba(13,14,19,0.15); color: var(--ink); padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+  .btn-delete { background: var(--error); border: none; color: white; padding: 0.6rem 1.25rem; border-radius: 8px; font-size: 0.875rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; }
+  .btn-delete:hover { background: #b91c1c; }
+
+  /* ALERT */
+  .toast { position: fixed; bottom: 2rem; right: 2rem; padding: 0.75rem 1.25rem; border-radius: 10px; font-size: 0.875rem; font-weight: 500; display: none; z-index: 200; }
+  .toast.show { display: block; }
+  .toast.success { background: var(--success); color: white; }
+  .toast.error { background: var(--error); color: white; }
+
+  /* EMPTY / LOADING */
+  .empty { text-align: center; padding: 3rem; color: var(--mid); }
+  .spinner-wrap { text-align: center; padding: 3rem; color: var(--mid); }
+
+  /* ACCESS DENIED */
+  #access-denied { display: none; text-align: center; padding: 5rem 2rem; }
+  #access-denied h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; margin-bottom: 0.5rem; }
+  #access-denied p { color: var(--mid); }
+
+  @media (max-width: 768px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .page { padding: 1.5rem; }
+    th:nth-child(3), td:nth-child(3) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Nx<span>Close</span></a>
+  <span class="nav-badge">Admin</span>
+  <div class="nav-right">
+    <span class="nav-user" id="nav-user"></span>
+    <button class="logout-btn" onclick="handleLogout()">Log Out</button>
+  </div>
+</nav>
+
+<div id="access-denied">
+  <h2>Access Denied</h2>
+  <p>This page is restricted to NxClose administrators.</p>
+</div>
+
+<div class="page" id="admin-page" style="display:none;">
+  <h1 class="page-title">Admin Console</h1>
+  <p class="page-sub">Manage users and monitor platform activity</p>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">Total Users</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-week">—</div><div class="stat-lbl">New This Week</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-agents">—</div><div class="stat-lbl">Agents & LOs</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-buyers">—</div><div class="stat-lbl">Buyers</div></div>
+  </div>
+
+  <div class="controls">
+    <input type="text" class="search-input" id="search" placeholder="Search by name or email..." oninput="filterUsers()">
+    <select class="filter-select" id="role-filter" onchange="filterUsers()">
+      <option value="">All Roles</option>
+      <option value="loan_officer">Loan Officers</option>
+      <option value="agent">RE Agents</option>
+      <option value="buyer">Buyers</option>
+      <option value="admin">Admin</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Company</th>
+          <th>Joined</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="users-tbody">
+        <tr><td colspan="5" class="spinner-wrap">Loading users...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <h3>Delete Account</h3>
+    <p id="delete-modal-text">Are you sure you want to delete this account? This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-delete" onclick="confirmDelete()">Delete Account</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const API          = 'https://nexclose-backend-production.up.railway.app';
+  const ADMIN_EMAIL  = 'pascual.delrosariojr@gmail.com';
+  const token        = localStorage.getItem('nc_token');
+  const user         = JSON.parse(localStorage.getItem('nc_user') || 'null');
+
+  let allUsers       = [];
+  let deleteTargetId = null;
+
+  // ── INIT ────────────────────────────────────────────────────────
+  async function init() {
+    if (!token || !user) { window.location.href = 'login.html'; return; }
+    if (user.email !== ADMIN_EMAIL) {
+      document.getElementById('access-denied').style.display = 'block';
+      return;
+    }
+    document.getElementById('nav-user').textContent = user.email;
+    document.getElementById('admin-page').style.display = 'block';
+    await Promise.all([loadStats(), loadUsers()]);
+  }
+
+  // ── STATS ────────────────────────────────────────────────────────
+  async function loadStats() {
+    try {
+      const res  = await fetch(`${API}/api/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      document.getElementById('stat-total').textContent = data.totalUsers ?? '—';
+      document.getElementById('stat-week').textContent  = data.newThisWeek ?? '—';
+      const agents  = data.byRole?.filter(r => ['loan_officer','agent'].includes(r.role)).reduce((a,b) => a + parseInt(b.count), 0) ?? 0;
+      const buyers  = data.byRole?.find(r => r.role === 'buyer')?.count ?? 0;
+      document.getElementById('stat-agents').textContent = agents;
+      document.getElementById('stat-buyers').textContent = buyers;
+    } catch { showToast('Failed to load stats', 'error'); }
+  }
+
+  // ── USERS ────────────────────────────────────────────────────────
+  async function loadUsers() {
+    try {
+      const res  = await fetch(`${API}/api/admin/users?limit=200`, { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      allUsers   = data.users || [];
+      renderUsers(allUsers);
+    } catch { showToast('Failed to load users', 'error'); }
+  }
+
+  function renderUsers(users) {
+    const tbody = document.getElementById('users-tbody');
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No users found</td></tr>'; return; }
+    const roleLabels = { loan_officer: 'Loan Officer', agent: 'RE Agent', buyer: 'Buyer', admin: 'Admin' };
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td>
+          <div class="user-name">${u.first_name} ${u.last_name}</div>
+          <div class="user-email">${u.email}</div>
+        </td>
+        <td><span class="role-badge role-${u.role}">${roleLabels[u.role] || u.role}</span></td>
+        <td>${u.company || '—'}</td>
+        <td>${new Date(u.created_at).toLocaleDateString()}</td>
+        <td>
+          ${u.email !== ADMIN_EMAIL ? `<button class="delete-btn" onclick="promptDelete(${u.id}, '${u.first_name} ${u.last_name}')">Delete</button>` : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterUsers() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const role   = document.getElementById('role-filter').value;
+    const filtered = allUsers.filter(u => {
+      const matchSearch = !search || u.email.toLowerCase().includes(search) || `${u.first_name} ${u.last_name}`.toLowerCase().includes(search);
+      const matchRole   = !role || u.role === role;
+      return matchSearch && matchRole;
+    });
+    renderUsers(filtered);
+  }
+
+  // ── DELETE ───────────────────────────────────────────────────────
+  function promptDelete(id, name) {
+    deleteTargetId = id;
+    document.getElementById('delete-modal-text').textContent = `Are you sure you want to delete ${name}'s account? This cannot be undone.`;
+    document.getElementById('delete-modal').classList.add('show');
+  }
+
+  function closeModal() {
+    deleteTargetId = null;
+    document.getElementById('delete-modal').classList.remove('show');
+  }
+
+  async function confirmDelete() {
+    if (!deleteTargetId) return;
+    try {
+      const res = await fetch(`${API}/api/admin/users/${deleteTargetId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast(data.error || 'Delete failed', 'error'); return; }
+      allUsers = allUsers.filter(u => u.id !== deleteTargetId);
+      filterUsers();
+      showToast('Account deleted successfully', 'success');
+      loadStats();
+    } catch { showToast('Connection error', 'error'); }
+    finally { closeModal(); }
+  }
+
+  // ── UTILS ────────────────────────────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = `toast ${type} show`;
+    setTimeout(() => t.className = 'toast', 3000);
+  }
+
+  function handleLogout() {
+    localStorage.clear();
+    window.location.href = 'login.html';
+  }
+
+  // Close modal on overlay click
+  document.getElementById('delete-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  init();
+</script>
+</body>
+</html>
